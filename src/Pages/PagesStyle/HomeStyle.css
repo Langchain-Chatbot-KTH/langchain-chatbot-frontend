@@ -1,0 +1,352 @@
+/*=============== GOOGLE FONTS ===============*/
+@import url("https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap");
+
+/*=============== VARIABLES CSS ===============*/
+:root {
+    --header-height: 3.5rem;
+
+    /*========== Colors ==========*/
+    /*Color mode HSL(hue, saturation, lightness)*/
+    --first-color: hsl(14, 98%, 50%);
+    --black-color: hsl(0, 0%, 0%);
+    --black-color-light: hsl(0, 0%, 40%);
+    --white-color: hsl(0, 0%, 95%);
+    --title-color: hsl(0, 0%, 0%);
+    --text-color: hsl(0, 0%, 35%);
+    --text-color-light: hsl(0, 0%, 64%);
+    --body-color: hsl(0, 0%, 87%);
+    --container-color: hsl(0, 0%, 83%);
+
+    /*========== Font and typography ==========*/
+    /*.5rem = 8px | 1rem = 16px ...*/
+    --body-font: "Bai Jamjuree", sans-serif;
+    --biggest-font-size: 2.5rem;
+    --h1-font-size: 1.75rem;
+    --h2-font-size: 1.25rem;
+    --h3-font-size: 1.125rem;
+    --normal-font-size: .938rem;
+    --small-font-size: .813rem;
+    --smaller-font-size: .75rem;
+
+    /*========== Font weight ==========*/
+    --font-regular: 400;
+    --font-medium: 500;
+    --font-semi-bold: 600;
+    --font-bold: 700;
+
+    /*========== z index ==========*/
+    --z-tooltip: 10;
+    --z-fixed: 100;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    font-size: 62.5%;
+}
+
+body{
+    font-family: var(--body-font);
+    font-size: var(--normal-font-size);
+    background: rgb(61, 11, 20);
+    color: rgb(243, 241, 245);
+}
+
+.App {
+    min-height: 100vh;
+    display: flex;
+}
+
+.sideBar{
+    flex: 3;
+    border-right: 1px solid rgb(243, 241, 245);
+}
+
+.main{
+    flex: 13;
+}
+
+.brand{
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    margin-right: 2.5rem;
+}
+
+.fa-solid{
+    font-size: 3.5rem;
+    margin-right: 2.5rem;
+    margin-left: 5rem;
+    margin-bottom: 1.5rem;
+}
+
+.upperSide {
+    padding: 1.0rem;
+    border-bottom: 1px solid rgb(243, 241, 245);
+    height: calc(100vh - 18rem);
+    width: 100%;
+    overflow: hidden;
+    max-width: 70rem;
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+    background: rgb(44, 8, 14);
+}
+
+.upperSideTop{
+    display: flex;
+    align-items: center;
+    margin-bottom: 2.5rem;
+}
+
+.addBtn{
+    height: 2rem;
+    padding-right: 1rem;
+}
+
+.midBtn{
+    background: rgb(44, 8, 14);
+    color: rgb(253, 253, 253);
+    padding: 1.25rem;
+    font-size: 1.5rem;
+    width: 20rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    border-radius: 0.5rem;
+    border: 1px dot-dot-dash rgb(252, 252, 252);
+}
+
+.addBtn {
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.midBtn {
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease, transform 0.3s ease, color 0.3s ease;
+}
+
+.midBtn:hover {
+    background: rgb(61, 0, 17);
+    color: #fff;
+    transform: translateY(-5px);
+    cursor: pointer;
+}
+
+.midBtn:hover>img {
+    transform: scale(1.5);
+}
+
+.midBtn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.midBtn:hover::before {
+    opacity: 1;
+}
+
+.query{
+    display: flex;
+    align-items: center;
+    background: transparent;
+    color: rgb(255, 255, 255);
+    padding: 1.5rem;
+    width: 20rem;
+    margin: 1rem auto;
+    border-radius: 0.5rem;
+    border: 1px solid rgb(243, 241, 245);
+}
+
+.query>img {
+    margin-right: 2rem;
+    object-fit: cover;
+    height: 1.75rem;
+}
+
+.query {
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.query:hover {
+    background: rgba(193, 33, 67, 0.1);
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.query::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.query:hover::before {
+    opacity: 1;
+}
+
+.query>img {
+    transition: transform 0.3s ease;
+}
+
+.query:hover>img {
+    transform: rotate(360deg);
+}
+
+.lowerSide{
+    padding: 2rem;
+    background: rgb(44, 8, 14);
+    border-bottom: 1px solid rgb(252, 252, 252);
+}
+
+.listItems {
+    margin: 0.75rem;
+    display: flex;
+    align-items: center;
+    font-size: 1.3rem;
+}
+
+.listItemsImg{
+    margin: 1rem;
+    padding-right: 1rem;
+}
+
+.listItems:nth-child(1)>.listItemsImg{
+    margin-right: 0.5rem;
+}
+
+.listItems:nth-child(3)>.listItemsImg{
+    margin-right: 0.75rem;
+}
+
+.listItems {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.listItems:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.listItemsImg {
+    transition: transform 0.3s ease;
+}
+
+.listItems:hover .listItemsImg {
+    transform: rotate(20deg);
+}
+
+.listItems:nth-child(1) > .listItemsImg {
+    margin-right: 0.5rem;
+}
+
+.listItems:nth-child(3) > .listItemsImg {
+    margin-right: 0.75rem;
+}
+
+.main{
+    min-height: calc(100vh - 14rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 6rem 10rem;
+    margin-bottom: 0;
+}
+
+.chats{
+    overflow: hidden;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    width: 100%;
+    max-width: 70rem;
+    height: calc(100vh - 17rem);
+}
+
+.chat{
+    margin: 1rem;
+    padding: 2rem 3rem;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: flex-start;
+    text-align: justify;
+}
+
+.chatImg{
+    object-fit: cover;
+    width: 3.5rem;
+    margin-right: 2rem;
+    border-radius: 0.5rem;
+}
+
+.bot {
+    background: rgb(243, 241, 245);
+    color: rgb(105, 17, 34);
+    width: fit-content;
+    border-radius: 0.5rem;
+
+}
+
+.chatFooter{
+    margin-top: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.inp{
+    padding: 0.5rem;
+    background: rgb(243, 241, 245);
+    color: rgb(105, 17, 34);
+    display: flex;
+    align-items: center;
+    border-radius: 0.5rem;
+    width: 68rem;
+}
+
+.inp>input {
+    width: calc(100% - 3rem);
+    outline: none;
+    padding: 1.25rem;
+    color: rgb(105, 17, 34);
+}
+
+.inp>input, .send{
+    background: transparent;
+    border: none;
+}
+
+.chatFooter>p{
+    margin: 2rem 0;
+}
+
+.send:hover{
+    cursor: pointer;
+}
+
+.send:hover{
+    transform: scale(1.1);
+}
