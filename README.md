@@ -1,70 +1,89 @@
-# Getting Started with Create React App
+# Medical Chatbot React Node Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+This repository contains a React Node application implementing a medical chatbot. Users can interact with the chatbot to ask medical-related questions and receive responses. The project is organized into three main components: `Home.js`, `Settings.js`, and `App.js`. Additionally, there is an `api.js` file containing functions related to API communication.
 
-In the project directory, you can run:
+## Components
 
-### `npm start`
+### 1. Home.js
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+#### Purpose
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+`Home.js` is the main component responsible for rendering the chat interface and handling user interactions.
 
-### `npm test`
+#### Key Features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Initializes the application, fetches or starts conversations based on the user's UUID.
+- Handles sending and receiving messages to and from the backend.
+- Supports the creation of new conversations and displays a list of recent conversations.
 
-### `npm run build`
+#### Dependencies
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- React
+- react-router-dom
+- Axios
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Settings.js
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### Purpose
 
-### `npm run eject`
+`Settings.js` provides a settings interface where users can view and update their UUID.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+#### Key Features
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Displays the current UUID.
+- Allows users to input a new UUID for their session.
+- Validates and updates the UUID, redirecting to the home page on success.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+#### Dependencies
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- React
+- react-router-dom
 
-## Learn More
+### 3. App.js
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+#### Purpose
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+`App.js` sets up the application routes using React Router, rendering the `Home` and `Settings` components.
 
-### Code Splitting
+#### Dependencies
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- React
+- react-router-dom
 
-### Analyzing the Bundle Size
+## API Communication
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### 1. api.js
 
-### Making a Progressive Web App
+#### Purpose
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+`api.js` contains functions for interacting with the backend API.
 
-### Advanced Configuration
+#### Functions
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- `initializeUUID`: Initializes the UUID by either retrieving it from local storage or generating a new one.
+- `sendMsgToBackend`: Sends a user or bot message to the backend.
+- `sendMsgToBotBackend`: Sends a user message to a separate backend for bot responses.
+- `initializeProgram`: Fetches existing conversation IDs for a given UUID.
+- `fetchConversationById`: Fetches a conversation by its ID.
+- `startNewConversation`: Initiates a new conversation for a given owner ID.
 
-### Deployment
+#### Dependencies
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- Axios
 
-### `npm run build` fails to minify
+## Usage
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Install dependencies: `npm install`
+2. Start the development server: `npm start`
+3. Open your browser and navigate to `http://localhost:3000`
+
+## Important Note
+
+- The medical chatbot may produce inaccurate information about treatments, symptoms, or facts.
+- This application was last updated on January 19th, Version.
+
+Feel free to explore the code, and if you have any questions or concerns, please reach out to the project maintainers.
+
+Enjoy using the Medical Chatbot!
