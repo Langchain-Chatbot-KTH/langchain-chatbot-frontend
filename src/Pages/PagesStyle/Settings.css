@@ -65,3 +65,15 @@ label {
     border-radius: 5px;
     cursor: pointer;
 }
+
+.update-uuid-btn,
+.close-btn {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.update-uuid-btn:hover,
+.close-btn:hover {
+    transition: all 0.3s ease-out;
+    transform: scale(1.1);
+    background-color: rgb(87, 15, 31);
+}

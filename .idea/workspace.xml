@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="73639153-e849-4962-a936-7f3f80058887" name="Changes" comment="">
+    <list default="true" id="73639153-e849-4962-a936-7f3f80058887" name="Changes" comment="Alpha 1.0 - Changed Settings to redirect to / if uuid update is successful">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/Settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/Settings.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/PagesStyle/Settings.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PagesStyle/Settings.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,8 +96,16 @@
       <workItem from="1705766353343" duration="39000" />
       <workItem from="1705766406997" duration="20000" />
       <workItem from="1705766432295" duration="20179000" />
-      <workItem from="1705842353250" duration="1129000" />
+      <workItem from="1705842353250" duration="1383000" />
     </task>
+    <task id="LOCAL−00001" summary="Alpha 1.0 - Changed Settings to redirect to / if uuid update is successful">
+      <option name="closed" value="true" />
+      <created>1705843706115</created>
+      <option name="number" value="LOCAL−00001" />
+      <option name="presentableId" value="LOCAL−00001" />
+      <updated>1705843706115</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -107,5 +115,7 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
+    <MESSAGE value="Alpha 1.0 - Changed Settings to redirect to / if uuid update is successful" />
+    <option name="LAST_COMMIT_MESSAGE" value="Alpha 1.0 - Changed Settings to redirect to / if uuid update is successful" />
   </component>
 </project>
