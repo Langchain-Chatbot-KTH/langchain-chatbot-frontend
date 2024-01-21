@@ -13,6 +13,8 @@ const Settings = () => {
         if (isValidUUID(inputUUID)) {
             localStorage.setItem('uuid', inputUUID);
             setError('');
+            // Redirect to the home page after successfully updating the UUID
+            window.location.href = '/';
         } else {
             setError('Invalid UUID format. Please enter a valid UUID.');
         }
