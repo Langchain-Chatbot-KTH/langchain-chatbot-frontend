@@ -1,4 +1,4 @@
-# Medical Chatbot React Node Project
+# SweBot React Node Project
 
 ## Overview
 
