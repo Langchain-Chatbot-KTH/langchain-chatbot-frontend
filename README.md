@@ -86,4 +86,4 @@ This repository contains a React Node application implementing a medical chatbot
 
 Feel free to explore the code, and if you have any questions or concerns, please reach out to the project maintainers.
 
-Enjoy using the Medical Chatbot!
+Enjoy using the SweBot!
