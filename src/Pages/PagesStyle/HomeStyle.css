@@ -52,7 +52,7 @@ html{
 body{
     font-family: var(--body-font);
     font-size: var(--normal-font-size);
-    background: rgb(61, 11, 20);
+    background: rgb(18, 24, 52);
     color: rgb(243, 241, 245);
 }
 
@@ -71,12 +71,14 @@ body{
 }
 
 .brand{
+    margin-top: 2rem;
     font-size: 2rem;
     margin-bottom: 1.5rem;
     margin-right: 2.5rem;
 }
 
-.fa-solid{
+.fa-brands{
+    margin-top: 2rem;
     font-size: 3.5rem;
     margin-right: 2.5rem;
     margin-left: 5rem;
@@ -92,7 +94,7 @@ body{
     max-width: 70rem;
     scroll-behavior: smooth;
     overflow-y: scroll;
-    background: rgb(44, 8, 14);
+    background: rgb(8, 10, 23);
 }
 
 .upperSideTop{
@@ -107,7 +109,7 @@ body{
 }
 
 .midBtn{
-    background: rgb(44, 8, 14);
+    background: rgb(8, 10, 23);
     color: rgb(253, 253, 253);
     padding: 1.25rem;
     font-size: 1.5rem;
@@ -133,7 +135,7 @@ body{
 }
 
 .midBtn:hover {
-    background: rgb(61, 0, 17);
+    background: rgb(84, 79, 1);
     color: #fff;
     transform: translateY(-5px);
     cursor: pointer;
@@ -184,7 +186,7 @@ body{
 }
 
 .query:hover {
-    background: rgba(193, 33, 67, 0.1);
+    background: rgba(188, 193, 33, 0.1);
     transform: scale(1.05);
     cursor: pointer;
 }
@@ -215,7 +217,7 @@ body{
 
 .lowerSide{
     padding: 2rem;
-    background: rgb(44, 8, 14);
+    background: rgb(8, 10, 23);
     border-bottom: 1px solid rgb(252, 252, 252);
 }
 
@@ -302,7 +304,7 @@ body{
 
 .bot {
     background: rgb(243, 241, 245);
-    color: rgb(105, 17, 34);
+    color: rgb(8, 10, 23);
     width: fit-content;
     border-radius: 0.5rem;
 
@@ -320,7 +322,7 @@ body{
 .inp{
     padding: 0.5rem;
     background: rgb(243, 241, 245);
-    color: rgb(105, 17, 34);
+    color: rgb(8, 10, 23);
     display: flex;
     align-items: center;
     border-radius: 0.5rem;
@@ -331,7 +333,7 @@ body{
     width: calc(100% - 3rem);
     outline: none;
     padding: 1.25rem;
-    color: rgb(105, 17, 34);
+    color: rgb(8, 10, 23);
 }
 
 .inp>input, .send{

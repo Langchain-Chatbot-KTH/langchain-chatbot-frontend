@@ -10,7 +10,7 @@
 
 .settings-box {
     background-color: rgb(241, 241, 245);
-    border: 2px solid rgba(193, 33, 67, 1);
+    border: 2px solid rgb(173, 160, 2);
     padding: 20px;
     border-radius: 10px;
     text-align: center;
@@ -18,14 +18,13 @@
 
 .uuid-display {
     font-size: 24px;
-    color: rgba(193, 33, 67, 1);
+    color: rgb(173, 160, 2);
     margin-bottom: 20px;
 }
 
-/* Styles for the input field */
 label {
     font-size: 16px;
-    color: rgba(193, 33, 67, 1);
+    color: rgb(173, 160, 2);
     display: block;
     margin-bottom: 8px;
 }
@@ -33,7 +32,7 @@ label {
 #uuidInput {
     width: 100%;
     padding: 10px;
-    border: 1px solid rgba(193, 33, 67, 1);
+    border: 1px solid rgb(173, 160, 2);
     border-radius: 5px;
     margin-bottom: 20px;
     box-sizing: border-box;
@@ -42,12 +41,12 @@ label {
 }
 
 .error-msg {
-    color: red;
+    color: rgb(173, 160, 2);
     margin-bottom: 10px;
 }
 
 .update-uuid-btn {
-    background-color: rgba(193, 33, 67, 1);
+    background-color: rgb(173, 160, 2);
     color: rgb(241, 241, 245);
     padding: 10px 20px;
     border: none;
@@ -58,7 +57,7 @@ label {
 }
 
 .close-btn {
-    background-color: rgba(193, 33, 67, 1);
+    background-color: rgb(173, 160, 2);
     color: rgb(241, 241, 245);
     padding: 10px 20px;
     border: none;
@@ -75,5 +74,5 @@ label {
 .close-btn:hover {
     transition: all 0.3s ease-out;
     transform: scale(1.1);
-    background-color: rgb(87, 15, 31);
+    background-color: rgb(93, 85, 0);
 }

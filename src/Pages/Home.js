@@ -9,7 +9,7 @@ import saved from '../assets/bookmark.svg';
 import rocket from '../assets/rocket.svg';
 import sendBtn from '../assets/send.svg';
 import userIcon from '../assets/TansparentPerson.png';
-import imageLogo from '../assets/littleMedicalIcon.png';
+import imageLogo from '../assets/IconChatBot.png';
 import {
     sendMsgToBackend,
     initializeProgram,
@@ -136,8 +136,8 @@ function Home() {
             <div className="sideBar">
                 <div className="upperSide">
                     <div className="upperSideTop">
-                        <i className="fa-solid fa-heart fa-xl fa-beat"></i>
-                        <span className="brand">Medical Chatbot</span>
+                        <i className="fa-brands fa-rocketchat fa-xl fa-beat"></i>
+                        <span className="brand">SweBot</span>
                     </div>
                     <button
                         className="midBtn"
@@ -181,7 +181,7 @@ function Home() {
                         <div className="chat bot">
                             <img className="chatImg" src={imageLogo} alt=""/>
                             <p className="txt">
-                                Hi, I am Medical Bot, a state-of-the-art language model developed by a student team at KTH.
+                                Hi, I am SweBot, a state-of-the-art language model developed by a student team at KTH.
                                 I'm designed to understand and generate human-like text based upon the input I receive.
                                 You can ask me questions and have conversations. Just let me know how I can help you!
                             </p>
@@ -205,7 +205,7 @@ function Home() {
                             <img src={sendBtn} alt="sendBtn"/>
                         </button>
                     </div>
-                    <p>Medical Chatbot may produce inaccurate information about treatments, symptoms or facts. Medical Chatbot January 19 Version.</p>
+                    <p>SweBot may produce inaccurate information about data, statements or facts. SweBot January 22 Version.</p>
                 </div>
             </div>
         </div>
