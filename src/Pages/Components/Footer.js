@@ -30,11 +30,11 @@ function Footer() {
                 <div class='social-media-wrap'>
                     <div class='footer-logo'>
                         <Link to='/' className='social-logo'>
-                            SweBot
+                            SW3BOT
                             <i class='fab fa-typo3' />
                         </Link>
                     </div>
-                    <small class='website-rights'>SweBot © 2024</small>
+                    <small class='website-rights'>SW3BOT © 2024</small>
                     <div class='social-icons'>
                         <Link
                             class='social-icon-link facebook'

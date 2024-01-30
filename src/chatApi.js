@@ -17,11 +17,21 @@ export async function sendMsgToBackend(message, conversationId, senderId) {
     }
 }
 
-export async function sendMsgToBotBackend(message) {
+export async function sendMsgToBotBackend(message, id) {
     try {
-        const response = await axios.post('http://localhost:8081/test/response', null, {
+        const conversation = await fetchConversationById(id);
+
+        const previousBotMessages = conversation.messages
+            .filter(message => message.senderId === 0)
+            .map(botMessage => "Previous Bot Message: " + botMessage.content);
+
+        const messageToSend = previousBotMessages.join('\n') + '\nLatest Message From User: ' + message;
+
+        console.log("Message Sent!: " + messageToSend)
+
+        const response = await axios.get('http://localhost:8100/generate_text', {
             params: {
-                message: message
+                message: messageToSend
             }
         });
 
@@ -32,9 +42,10 @@ export async function sendMsgToBotBackend(message) {
     }
 }
 
+
+
 export async function initializeProgram(uuid) {
     try {
-        console.log(uuid);
         const response = await axios.get(`http://localhost:8080/api/conversations/getByOwnerId`, {
             params: {
                 ownerId: uuid
@@ -68,7 +79,6 @@ export async function startNewConversation(ownerId) {
         return response.data.id;
     } catch (error) {
         console.error('Error starting new conversation:', error);
-        console.log('Response:', error.response);
         throw error;
     }
 }

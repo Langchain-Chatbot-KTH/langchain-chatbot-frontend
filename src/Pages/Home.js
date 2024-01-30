@@ -30,20 +30,17 @@ function Home() {
         const initialize = async () => {
             try {
                 const uuid = await initializeUUID();
-                console.log('Initialized UUID:', uuid);
 
                 const ids = await initializeProgram(uuid);
 
                 if (!ids || ids.length === 0) {
                     const newConversationId = await startNewConversation(uuid);
                     setFirstIds([newConversationId]);
-                    console.log('New conversation started with ID:', newConversationId);
                     await handleQueryClick(newConversationId);
                 } else {
                     setFirstIds(ids);
                 }
 
-                console.log('First IDs:', ids);
             } catch (error) {
                 console.error('Error initializing UUID:', error);
             }
@@ -52,22 +49,30 @@ function Home() {
         initialize();
     }, []);
 
+    const [isSending, setIsSending] = useState(false);
+
     const handleSend = async () => {
         const text = input;
 
         if (selectedConversation) {
-            await sendMsgToBackend(text, selectedConversation.id, 1);
-            const botResponse = await sendMsgToBotBackend(text);
-            console.log("test response from bot: " + text);
-            await sendMsgToBackend(botResponse, selectedConversation.id, 0);
-            setInput('');
-            await handleQueryClick(selectedConversation.id);
+            try {
+                setIsSending(true);
+                await sendMsgToBackend(text, selectedConversation.id, 1);
+                const botResponse = await sendMsgToBotBackend(text, selectedConversation.id);
+                await sendMsgToBackend(botResponse.toString(), selectedConversation.id, 0);
+                setInput('');
+                await handleQueryClick(selectedConversation.id);
 
-            if (selectedConversation.messages.length <= 1) {
-                fetchQueryNames();
+                if (selectedConversation.messages.length <= 1) {
+                    await fetchQueryNames();
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+            } finally {
+                setIsSending(false);
             }
         } else {
-            console.error('No conversation selected to send message to.');
+            console.error('No conversation selected to send a message to.');
         }
     };
 
@@ -86,7 +91,6 @@ function Home() {
             const uuid = await initializeUUID();
             const newConversationId = await startNewConversation(uuid);
             setFirstIds((prevIds) => [...prevIds, newConversationId]);
-            console.log('New conversation started with ID:', newConversationId);
             await handleQueryClick(newConversationId);
         } catch (error) {
             console.error('Error starting new chat:', error);
@@ -136,8 +140,8 @@ function Home() {
             <div className="sideBar">
                 <div className="upperSide">
                     <div className="upperSideTop">
-                        <i className="fa-brands fa-rocketchat fa-xl fa-beat"></i>
-                        <span className="brand">SweBot</span>
+                        <i className="fa-regular fa-comments fa-xl fa-beat"></i>
+                        <span className="brand">SW3BOT</span>
                     </div>
                     <button
                         className="midBtn"
@@ -145,7 +149,7 @@ function Home() {
                         disabled={isConversationEmpty}
                     >
                         <img src={addBtn} alt="new chat" className="addBtn"/>
-                        New Chat
+                        Ny Chatt!
                     </button>
                     <div className="upperSideBottom">
                         {firstIds ? (
@@ -163,15 +167,15 @@ function Home() {
                     </div>
                 </div>
                 <div className="lowerSide">
-                    <div className="listItems"><img src={home} alt="home" className="listItemsImg"/>Home</div>
-                    <div className="listItems"><img src={saved} alt="saved" className="listItemsImg"/>Saved</div>
+                    <div className="listItems"><img src={home} alt="home" className="listItemsImg"/>Hem</div>
+                    <div className="listItems"><img src={saved} alt="saved" className="listItemsImg"/>Sparade</div>
                     <Link
                         to="/settings"
                         className="listItems"
                         style={{ textDecoration: 'none', color: 'white' }}
                     >
                         <img src={rocket} alt="rocket" className="listItemsImg" />
-                        Settings
+                        Inställningar
                     </Link>
                 </div>
             </div>
@@ -181,9 +185,9 @@ function Home() {
                         <div className="chat bot">
                             <img className="chatImg" src={imageLogo} alt=""/>
                             <p className="txt">
-                                Hi, I am SweBot, a state-of-the-art language model developed by a student team at KTH.
-                                I'm designed to understand and generate human-like text based upon the input I receive.
-                                You can ask me questions and have conversations. Just let me know how I can help you!
+                                Hej, jag är SW3Bot, en toppmodern språkmodell utvecklad av ett studentteam vid KTH.
+                                Jag är utformad för att förstå och generera mänskligt liknande text baserat på den input jag får.
+                                Du kan ställa mig frågor och ha konversationer. Berätta bara hur jag kan hjälpa dig!
                             </p>
                         </div>
                     )}
@@ -201,11 +205,15 @@ function Home() {
                 <div className="chatFooter">
                     <div className="inp">
                         <input type="text" placeholder='Send Message' value={input} onChange={(e) => setInput(e.target.value)}/>
-                        <button className="send" onClick={handleSend}>
-                            <img src={sendBtn} alt="sendBtn"/>
-                        </button>
-                    </div>
-                    <p>SweBot may produce inaccurate information about data, statements or facts. SweBot January 22 Version.</p>
+                        <button className="send" onClick={handleSend} disabled={isSending}>
+                            {isSending ? (
+                                <i className="fa-solid fa-sync fa-spin"></i>
+                                ) : (<img src={sendBtn} alt="sendBtn"/>
+                        )}
+                    </button>
+
+                </div>
+                    <p>SW3Bot kan producera felaktig information om data, påståenden eller fakta. SW3Bot Januari 29 Version.</p>
                 </div>
             </div>
         </div>
