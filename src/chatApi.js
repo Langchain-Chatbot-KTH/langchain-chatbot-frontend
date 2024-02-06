@@ -27,9 +27,7 @@ export async function sendMsgToBotBackend(message, id) {
 
         const messageToSend = previousBotMessages.join('\n') + '\nLatest Message From User: ' + message;
 
-        console.log("Message Sent!: " + messageToSend)
-
-        const response = await axios.get('http://localhost:8100/generate_text', {
+        const response = await axios.get('http://localhost:9090/generateText/llama2', {
             params: {
                 message: messageToSend
             }
