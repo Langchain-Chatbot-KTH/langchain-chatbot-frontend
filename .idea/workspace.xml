@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="73639153-e849-4962-a936-7f3f80058887" name="Changes" comment="Github Actions - master">
+    <list default="true" id="73639153-e849-4962-a936-7f3f80058887" name="Changes" comment="V 1.0 Langchain with WordCrafted">
+      <change afterPath="$PROJECT_DIR$/src/assets/chain_icon.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/Components/ComponentsStyling/Footer.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/Components/ComponentsStyling/Footer.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/Components/Footer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/Components/Footer.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/Home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/PagesStyle/HomeStyle.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PagesStyle/HomeStyle.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/PagesStyle/Settings.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PagesStyle/Settings.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/chatApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/chatApi.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,6 +68,7 @@
       <recent name="C:\Users\GTSA Infinity\IdeaProjects\medical-chatbot-frontend\public" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\GTSA Infinity\IdeaProjects\medical-chatbot-frontend\src\assets" />
       <recent name="C:\Users\GTSA Infinity\IdeaProjects\medical-chatbot-frontend\src\Pages" />
       <recent name="C:\Users\GTSA Infinity\IdeaProjects\Fullstack_Course\medical-chatbot-frontend\src" />
       <recent name="C:\Users\GTSA Infinity\IdeaProjects\Fullstack_Course\medical-chatbot-frontend\src\Pages\PagesStyle" />
@@ -120,7 +117,8 @@
       <workItem from="1707215352050" duration="454000" />
       <workItem from="1707215810804" duration="1946000" />
       <workItem from="1707219382247" duration="1734000" />
-      <workItem from="1707243886717" duration="5447000" />
+      <workItem from="1707243886717" duration="5553000" />
+      <workItem from="1707299678583" duration="334000" />
     </task>
     <task id="LOCAL−00001" summary="Alpha 1.0 - Changed Settings to redirect to / if uuid update is successful">
       <option name="closed" value="true" />
@@ -157,7 +155,21 @@
       <option name="presentableId" value="LOCAL−00005" />
       <updated>1706599545283</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL−00006" summary="V 1.0 Langchain with WordCrafted">
+      <option name="closed" value="true" />
+      <created>1707249431314</created>
+      <option name="number" value="LOCAL−00006" />
+      <option name="presentableId" value="LOCAL−00006" />
+      <updated>1707249431314</updated>
+    </task>
+    <task id="LOCAL−00007" summary="V 1.0 Langchain with WordCrafted">
+      <option name="closed" value="true" />
+      <created>1707249440262</created>
+      <option name="number" value="LOCAL−00007" />
+      <option name="presentableId" value="LOCAL−00007" />
+      <updated>1707249440262</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -183,6 +195,7 @@
     <MESSAGE value="Alpha 1.1 - Changed Display to SweBot" />
     <MESSAGE value="Alpha 1.2 - Added GPTSW3 Integration" />
     <MESSAGE value="Github Actions - master" />
-    <option name="LAST_COMMIT_MESSAGE" value="Github Actions - master" />
+    <MESSAGE value="V 1.0 Langchain with WordCrafted" />
+    <option name="LAST_COMMIT_MESSAGE" value="V 1.0 Langchain with WordCrafted" />
   </component>
 </project>
