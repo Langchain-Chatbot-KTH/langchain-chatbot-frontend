@@ -50,7 +50,7 @@ function Home() {
 
         // Function to initialize SSE
         const initializeSSE = () => {
-            const sse = new EventSource(`http://localhost:9090/subscribe/b06c92b2-8fcc-41b0-90fe-a9a60051f545`);
+            const sse = new EventSource(`http://localhost:9090/subscribe/b06c92b2-8fcc-41b0-90fe-a9a60051f549`);
 
             sse.onmessage = (event) => {
                 console.log("The received message: " + event.data);
@@ -81,11 +81,21 @@ function Home() {
 
     useEffect(() => {
         // This effect acts whenever 'data' changes and is not null.
-        if (data) {
-            console.log("Data received from SSE: ", data);
-            sendMsgToBackend(data, selectedConversation.id, 0);
-            handleQueryClick(selectedConversation.id);
-        }
+        const processData = async () => {
+            if (data) {
+                console.log("Data received from SSE: ", data);
+                try {
+                    // Ensure sendMsgToBackend is awaited before proceeding
+                    await sendMsgToBackend(data, selectedConversation.id, 0);
+                    // Once sendMsgToBackend is done, call handleQueryClick
+                    await handleQueryClick(selectedConversation.id);
+                } catch (error) {
+                    console.error('Error processing data:', error);
+                }
+            }
+        };
+    
+        processData();
     }, [data]); // This effect depends on 'data'
 
     const [isSending, setIsSending] = useState(false);
@@ -97,10 +107,9 @@ function Home() {
             try {
                 setIsSending(true);
                 await sendMsgToBackend(text, selectedConversation.id, 1);
-                await sendMsgToBotBackend(text, uuid);
                 setInput('');
                 await handleQueryClick(selectedConversation.id);
-
+                await sendMsgToBotBackend(text, uuid);
                 if (selectedConversation.messages.length <= 1) {
                     await fetchQueryNames();
                 }
