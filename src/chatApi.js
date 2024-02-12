@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export async function sendMsgToBackend(message, conversationId, senderId) {
     try {
-        const response = await axios.post(`http://localhost:8080/api/conversations/${conversationId}/send`, null, {
+        const response = await axios.post(`http://localhost:8082/api/conversations/${conversationId}/send`, null, {
             params: {
                 conversationId: conversationId,
                 content: message,
@@ -17,27 +17,45 @@ export async function sendMsgToBackend(message, conversationId, senderId) {
     }
 }
 
-export async function sendMsgToBotBackend(message, id) {
+// export async function sendMsgToBotBackend(message, id) {
+//     try {
+//         const conversation = await fetchConversationById(id);
+
+//         const previousBotMessages = conversation.messages
+//             .filter(message => message.senderId === 0)
+//             .map(botMessage => "Previous Bot Message: " + botMessage.content);
+
+//         const messageToSend = previousBotMessages.join('\n') + '\nLatest Message From User: ' + message;
+
+//         console.log("Message Sent!: " + messageToSend)
+
+//         const response = await axios.get('http://localhost:8100/generate_text', {
+//             params: {
+//                 message: messageToSend
+//             }
+//         });
+
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error sending message to bot backend:', error);
+//         throw error;
+//     }
+// }
+
+export async function sendMsgToBotBackend(message, uuid) {
     try {
-        const conversation = await fetchConversationById(id);
-
-        const previousBotMessages = conversation.messages
-            .filter(message => message.senderId === 0)
-            .map(botMessage => "Previous Bot Message: " + botMessage.content);
-
-        const messageToSend = previousBotMessages.join('\n') + '\nLatest Message From User: ' + message;
-
-        console.log("Message Sent!: " + messageToSend)
-
-        const response = await axios.get('http://localhost:8100/generate_text', {
+        console.log("THE UUID: " + uuid) // Sometimes null, if begin with an already existing conversation. Needs to be fixed!!!
+        console.log("The message: " + message)
+        const response = await axios.get('http://localhost:9090/generateText/llama2', {
             params: {
-                message: messageToSend
+                message: message,
+                uuid: uuid
             }
         });
 
         return response.data;
     } catch (error) {
-        console.error('Error sending message to bot backend:', error);
+        console.error('Error sending message to backend:', error);
         throw error;
     }
 }
@@ -46,7 +64,7 @@ export async function sendMsgToBotBackend(message, id) {
 
 export async function initializeProgram(uuid) {
     try {
-        const response = await axios.get(`http://localhost:8080/api/conversations/getByOwnerId`, {
+        const response = await axios.get(`http://localhost:8082/api/conversations/getByOwnerId`, {
             params: {
                 ownerId: uuid
             }
@@ -61,7 +79,7 @@ export async function initializeProgram(uuid) {
 
 export async function fetchConversationById(id) {
     try {
-        const response = await axios.get(`http://localhost:8080/api/conversations/${id}`);
+        const response = await axios.get(`http://localhost:8082/api/conversations/${id}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching conversation:', error);
@@ -71,7 +89,7 @@ export async function fetchConversationById(id) {
 
 export async function startNewConversation(ownerId) {
     try {
-        const response = await axios.post('http://localhost:8080/api/conversations/start', null, {
+        const response = await axios.post('http://localhost:8082/api/conversations/start', null, {
             params: {
                 ownerId: ownerId
             }

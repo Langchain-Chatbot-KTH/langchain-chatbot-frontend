@@ -1,8 +1,5 @@
-// Home.js
-
 import React, { useEffect, useState } from 'react';
 import './PagesStyle/HomeStyle.css';
-import addBtn from '../assets/add-30.png';
 import msgIcon from '../assets/message.svg';
 import home from '../assets/home.svg';
 import saved from '../assets/bookmark.svg';
@@ -25,11 +22,14 @@ function Home() {
     const [firstIds, setFirstIds] = useState(null);
     const [selectedConversation, setSelectedConversation] = useState(null);
     const [isConversationEmpty, setIsConversationEmpty] = useState(true);
+    const [uuid, setuuid] = useState(null);
+    const [data, setData] = useState(null);
 
     useEffect(() => {
         const initialize = async () => {
             try {
                 const uuid = await initializeUUID();
+                setuuid(uuid);
 
                 const ids = await initializeProgram(uuid);
 
@@ -39,6 +39,8 @@ function Home() {
                     await handleQueryClick(newConversationId);
                 } else {
                     setFirstIds(ids);
+                    const lastIndex = ids.length - 1;
+                    await handleQueryClick(ids[lastIndex]);
                 }
 
             } catch (error) {
@@ -46,8 +48,45 @@ function Home() {
             }
         };
 
+        // Function to initialize SSE
+        const initializeSSE = () => {
+            const sse = new EventSource(`http://localhost:9090/subscribe/b06c92b2-8fcc-41b0-90fe-a9a60051f545`);
+
+            sse.onmessage = (event) => {
+                console.log("The received message: " + event.data);
+                const data = event.data;
+                setData(data);
+            };
+
+            sse.onerror = () => {
+                // Error handling
+                console.error('SSE failed');
+                sse.close();
+            };
+
+            // Clean up the SSE connection when the component unmounts
+            return () => {
+                sse.close();
+            };
+        };
+
         initialize();
+
+        // Call the function to initialize SSE
+        const cleanup = initializeSSE();
+
+        // Return the cleanup function from useEffect
+        return cleanup;
     }, []);
+
+    useEffect(() => {
+        // This effect acts whenever 'data' changes and is not null.
+        if (data) {
+            console.log("Data received from SSE: ", data);
+            sendMsgToBackend(data, selectedConversation.id, 0);
+            handleQueryClick(selectedConversation.id);
+        }
+    }, [data]); // This effect depends on 'data'
 
     const [isSending, setIsSending] = useState(false);
 
@@ -58,8 +97,7 @@ function Home() {
             try {
                 setIsSending(true);
                 await sendMsgToBackend(text, selectedConversation.id, 1);
-                const botResponse = await sendMsgToBotBackend(text, selectedConversation.id);
-                await sendMsgToBackend(botResponse.toString(), selectedConversation.id, 0);
+                await sendMsgToBotBackend(text, uuid);
                 setInput('');
                 await handleQueryClick(selectedConversation.id);
 
@@ -89,6 +127,7 @@ function Home() {
     const handleNewChat = async () => {
         try {
             const uuid = await initializeUUID();
+            setuuid(uuid);
             const newConversationId = await startNewConversation(uuid);
             setFirstIds((prevIds) => [...prevIds, newConversationId]);
             await handleQueryClick(newConversationId);
@@ -134,22 +173,26 @@ function Home() {
         fetchQueryNames();
     }, [firstIds]);
 
+    const processText = (text) => {
+        text = text.replace(/(\d+)\.\s*/g, "$1. ");
+        text = text.replace(/\*/g, "\n• ");
+        text = text.replace(/\n/g, "<br>");
+        return text;
+    };
 
     return (
         <div className="App">
             <div className="sideBar">
                 <div className="upperSide">
                     <div className="upperSideTop">
-                        <i className="fa-regular fa-comments fa-xl fa-beat"></i>
-                        <span className="brand">SW3BOT</span>
                     </div>
                     <button
                         className="midBtn"
                         onClick={handleNewChat}
                         disabled={isConversationEmpty}
                     >
-                        <img src={addBtn} alt="new chat" className="addBtn"/>
-                        Ny Chatt!
+                        <img src={imageLogo} alt="new chat" className="addBtn"/>
+                        New Chat
                     </button>
                     <div className="upperSideBottom">
                         {firstIds ? (
@@ -167,15 +210,15 @@ function Home() {
                     </div>
                 </div>
                 <div className="lowerSide">
-                    <div className="listItems"><img src={home} alt="home" className="listItemsImg"/>Hem</div>
-                    <div className="listItems"><img src={saved} alt="saved" className="listItemsImg"/>Sparade</div>
+                    <div className="listItems"><img src={home} alt="home" className="listItemsImg"/>Home</div>
+                    <div className="listItems"><img src={saved} alt="saved" className="listItemsImg"/>Model</div>
                     <Link
                         to="/settings"
                         className="listItems"
                         style={{ textDecoration: 'none', color: 'white' }}
                     >
                         <img src={rocket} alt="rocket" className="listItemsImg" />
-                        Inställningar
+                        Settings
                     </Link>
                 </div>
             </div>
@@ -185,9 +228,7 @@ function Home() {
                         <div className="chat bot">
                             <img className="chatImg" src={imageLogo} alt=""/>
                             <p className="txt">
-                                Hej, jag är SW3Bot, en toppmodern språkmodell utvecklad av ett studentteam vid KTH.
-                                Jag är utformad för att förstå och generera mänskligt liknande text baserat på den input jag får.
-                                Du kan ställa mig frågor och ha konversationer. Berätta bara hur jag kan hjälpa dig!
+                                Hello, I'm WordCrafted, a state-of-the-art language model developed by a student team at KTH. I'm designed to understand and generate human-like text based on the input I receive. You can ask me questions and have conversations. Just let me know how I can assist you!
                             </p>
                         </div>
                     )}
@@ -198,7 +239,7 @@ function Home() {
                                 src={message.senderId === 0 ? imageLogo : userIcon}
                                 alt=""
                             />
-                            <p className="txt">{message.content}</p>
+                            <p className="txt" dangerouslySetInnerHTML={{ __html: message.senderId === 0 ? processText(message.content) : message.content }}></p>
                         </div>
                     ))}
                 </div>
@@ -208,12 +249,12 @@ function Home() {
                         <button className="send" onClick={handleSend} disabled={isSending}>
                             {isSending ? (
                                 <i className="fa-solid fa-sync fa-spin"></i>
-                                ) : (<img src={sendBtn} alt="sendBtn"/>
-                        )}
-                    </button>
+                            ) : (<img src={sendBtn} alt="sendBtn"/>
+                            )}
+                        </button>
 
-                </div>
-                    <p>SW3Bot kan producera felaktig information om data, påståenden eller fakta. SW3Bot Januari 29 Version.</p>
+                    </div>
+                    <p>WordCrafted can produce inaccurate information about data, claims, or facts. WordCrafted February 06 Version.</p>
                 </div>
             </div>
         </div>
