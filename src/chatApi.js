@@ -17,31 +17,6 @@ export async function sendMsgToBackend(message, conversationId, senderId) {
     }
 }
 
-// export async function sendMsgToBotBackend(message, id) {
-//     try {
-//         const conversation = await fetchConversationById(id);
-
-//         const previousBotMessages = conversation.messages
-//             .filter(message => message.senderId === 0)
-//             .map(botMessage => "Previous Bot Message: " + botMessage.content);
-
-//         const messageToSend = previousBotMessages.join('\n') + '\nLatest Message From User: ' + message;
-
-//         console.log("Message Sent!: " + messageToSend)
-
-//         const response = await axios.get('http://localhost:8100/generate_text', {
-//             params: {
-//                 message: messageToSend
-//             }
-//         });
-
-//         return response.data;
-//     } catch (error) {
-//         console.error('Error sending message to bot backend:', error);
-//         throw error;
-//     }
-// }
-
 export async function sendMsgToBotBackend(message, uuid) {
     try {
         console.log("THE UUID: " + uuid) // Sometimes null, if begin with an already existing conversation. Needs to be fixed!!!
@@ -60,7 +35,23 @@ export async function sendMsgToBotBackend(message, uuid) {
     }
 }
 
+export async function sendMsgToBotBackendStream(message, uuid) {
+    try {
+        console.log("THE UUID: " + uuid) // Sometimes null, if begin with an already existing conversation. Needs to be fixed!!!
+        console.log("The message: " + message)
+        const response = await axios.get('http://localhost:9090/generateStream/llama2', {
+            params: {
+                message: message,
+                uuid: uuid
+            }
+        });
 
+        return response.data;
+    } catch (error) {
+        console.error('Error sending message to backend:', error);
+        throw error;
+    }
+}
 
 export async function initializeProgram(uuid) {
     try {

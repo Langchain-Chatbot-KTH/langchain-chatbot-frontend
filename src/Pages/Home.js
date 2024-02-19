@@ -12,7 +12,8 @@ import {
     initializeProgram,
     fetchConversationById,
     startNewConversation,
-    sendMsgToBotBackend
+    sendMsgToBotBackend,
+    sendMsgToBotBackendStream,
 } from '../chatApi';
 import { initializeUUID } from "./UUID";
 import { Link } from "react-router-dom";
@@ -50,7 +51,7 @@ function Home() {
 
         // Function to initialize SSE
         const initializeSSE = () => {
-            const sse = new EventSource(`http://localhost:9090/subscribe/b06c92b2-8fcc-41b0-90fe-a9a60051f549`);
+            const sse = new EventSource(`http://localhost:9090/subscribe/b06c92b2-8fcc-41b0-90fe-a9a60051f559`);
 
             sse.onmessage = (event) => {
                 console.log("The received message: " + event.data);
@@ -85,10 +86,11 @@ function Home() {
             if (data) {
                 console.log("Data received from SSE: ", data);
                 try {
-                    // Ensure sendMsgToBackend is awaited before proceeding
+                    // // Ensure sendMsgToBackend is awaited before proceeding
                     await sendMsgToBackend(data, selectedConversation.id, 0);
-                    // Once sendMsgToBackend is done, call handleQueryClick
+                    // // Once sendMsgToBackend is done, call handleQueryClick
                     await handleQueryClick(selectedConversation.id);
+                    // setSelectedConversation(data);
                 } catch (error) {
                     console.error('Error processing data:', error);
                 }
@@ -109,7 +111,8 @@ function Home() {
                 await sendMsgToBackend(text, selectedConversation.id, 1);
                 setInput('');
                 await handleQueryClick(selectedConversation.id);
-                await sendMsgToBotBackend(text, uuid);
+                // await sendMsgToBotBackend(text, uuid); // TextGenerate
+                await sendMsgToBotBackendStream(text, uuid); // StreamGenerate
                 if (selectedConversation.messages.length <= 1) {
                     await fetchQueryNames();
                 }
