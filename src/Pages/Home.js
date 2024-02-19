@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import './PagesStyle/HomeStyle.css';
-import addBtn from '../assets/add-30.png';
 import msgIcon from '../assets/message.svg';
 import home from '../assets/home.svg';
 import saved from '../assets/bookmark.svg';
@@ -13,7 +12,8 @@ import {
     initializeProgram,
     fetchConversationById,
     startNewConversation,
-    sendMsgToBotBackend
+    sendMsgToBotBackend,
+    sendMsgToBotBackendStream,
 } from '../chatApi';
 import { initializeUUID } from "./UUID";
 import { Link } from "react-router-dom";
@@ -23,11 +23,14 @@ function Home() {
     const [firstIds, setFirstIds] = useState(null);
     const [selectedConversation, setSelectedConversation] = useState(null);
     const [isConversationEmpty, setIsConversationEmpty] = useState(true);
+    const [uuid, setuuid] = useState(null);
+    const [data, setData] = useState(null);
 
     useEffect(() => {
         const initialize = async () => {
             try {
                 const uuid = await initializeUUID();
+                setuuid(uuid);
 
                 const ids = await initializeProgram(uuid);
 
@@ -46,8 +49,56 @@ function Home() {
             }
         };
 
+        // Function to initialize SSE
+        const initializeSSE = () => {
+            const sse = new EventSource(`http://localhost:9090/subscribe/b06c92b2-8fcc-41b0-90fe-a9a60051f559`);
+
+            sse.onmessage = (event) => {
+                console.log("The received message: " + event.data);
+                const data = event.data;
+                setData(data);
+            };
+
+            sse.onerror = () => {
+                // Error handling
+                console.error('SSE failed');
+                sse.close();
+            };
+
+            // Clean up the SSE connection when the component unmounts
+            return () => {
+                sse.close();
+            };
+        };
+
         initialize();
+
+        // Call the function to initialize SSE
+        const cleanup = initializeSSE();
+
+        // Return the cleanup function from useEffect
+        return cleanup;
     }, []);
+
+    useEffect(() => {
+        // This effect acts whenever 'data' changes and is not null.
+        const processData = async () => {
+            if (data) {
+                console.log("Data received from SSE: ", data);
+                try {
+                    // // Ensure sendMsgToBackend is awaited before proceeding
+                    await sendMsgToBackend(data, selectedConversation.id, 0);
+                    // // Once sendMsgToBackend is done, call handleQueryClick
+                    await handleQueryClick(selectedConversation.id);
+                    // setSelectedConversation(data);
+                } catch (error) {
+                    console.error('Error processing data:', error);
+                }
+            }
+        };
+    
+        processData();
+    }, [data]); // This effect depends on 'data'
 
     const [isSending, setIsSending] = useState(false);
 
@@ -58,11 +109,10 @@ function Home() {
             try {
                 setIsSending(true);
                 await sendMsgToBackend(text, selectedConversation.id, 1);
-                const botResponse = await sendMsgToBotBackend(text, selectedConversation.id);
-                await sendMsgToBackend(botResponse.toString(), selectedConversation.id, 0);
                 setInput('');
                 await handleQueryClick(selectedConversation.id);
-
+                // await sendMsgToBotBackend(text, uuid); // TextGenerate
+                await sendMsgToBotBackendStream(text, uuid); // StreamGenerate
                 if (selectedConversation.messages.length <= 1) {
                     await fetchQueryNames();
                 }
@@ -89,6 +139,7 @@ function Home() {
     const handleNewChat = async () => {
         try {
             const uuid = await initializeUUID();
+            setuuid(uuid);
             const newConversationId = await startNewConversation(uuid);
             setFirstIds((prevIds) => [...prevIds, newConversationId]);
             await handleQueryClick(newConversationId);
