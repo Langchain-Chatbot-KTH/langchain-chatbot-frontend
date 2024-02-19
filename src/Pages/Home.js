@@ -6,7 +6,7 @@ import saved from '../assets/bookmark.svg';
 import rocket from '../assets/rocket.svg';
 import sendBtn from '../assets/send.svg';
 import userIcon from '../assets/TansparentPerson.png';
-import imageLogo from '../assets/IconChatBot.png';
+import imageLogo from '../assets/chain_icon.png';
 import {
     sendMsgToBackend,
     initializeProgram,

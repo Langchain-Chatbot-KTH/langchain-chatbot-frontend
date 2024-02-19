@@ -21,6 +21,15 @@ export async function sendMsgToBotBackend(message, uuid) {
     try {
         console.log("THE UUID: " + uuid) // Sometimes null, if begin with an already existing conversation. Needs to be fixed!!!
         console.log("The message: " + message)
+        
+        const conversation = await fetchConversationById(id);
+
+        const previousBotMessages = conversation.messages
+            .filter(message => message.senderId === 0)
+            .map(botMessage => "Previous Bot Message: " + botMessage.content);
+
+        const messageToSend = previousBotMessages.join('\n') + '\nLatest Message From User: ' + message;
+
         const response = await axios.get('http://localhost:9090/generateText/llama2', {
             params: {
                 message: message,
