@@ -17,11 +17,54 @@ export async function sendMsgToBackend(message, conversationId, senderId) {
     }
 }
 
-export async function sendMsgToBotBackend(message, uuid) {
+export async function appendMsgToBackend(messageId, message) {
     try {
-        console.log("THE UUID: " + uuid) // Sometimes null, if begin with an already existing conversation. Needs to be fixed!!!
-        console.log("The message: " + message)
-        
+        const response = await axios.post(`http://localhost:8082/api/conversations/messages/${messageId}/addText`, null, {
+            params: {
+                messageId: messageId,
+                additionalText: message,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error sending message:', error);
+        throw error;
+    }
+}
+
+
+export async function sendMsgToBotBackendStream(message, id) {
+
+    const uuid = localStorage.getItem('uuid');
+    const conversation = await fetchConversationById(id);
+
+    const previousBotMessages = conversation.messages
+        .filter(message => message.senderId === 0)
+        .map(botMessage => "Previous Bot Message: " + botMessage.content);
+
+    const messageToSend = previousBotMessages.join('\n') + '\nUser:' + message;
+
+    try {
+        axios.get('http://localhost:9090/generateStream/model', {
+            params: {
+                message: messageToSend,
+                model: "mistral",
+                uuid: uuid
+            }
+        });
+
+        return await axios.get('http://localhost:9090/generateStream/health');
+
+    } catch (error) {
+        console.error('Error sending message to backend:', error);
+        throw error;
+    }
+}
+
+export async function sendMsgToBotBackend(message, id) {
+    try {
+
+        const uuid = localStorage.getItem('uuid');
         const conversation = await fetchConversationById(id);
 
         const previousBotMessages = conversation.messages
@@ -30,9 +73,10 @@ export async function sendMsgToBotBackend(message, uuid) {
 
         const messageToSend = previousBotMessages.join('\n') + '\nLatest Message From User: ' + message;
 
-        const response = await axios.get('http://localhost:9090/generateText/llama2', {
+        const response = await axios.get('http://localhost:9090/generateText/WholeText', {
             params: {
-                message: message,
+                message: messageToSend,
+                modelName: "phi",
                 uuid: uuid
             }
         });
@@ -44,23 +88,7 @@ export async function sendMsgToBotBackend(message, uuid) {
     }
 }
 
-export async function sendMsgToBotBackendStream(message, uuid) {
-    try {
-        console.log("THE UUID: " + uuid) // Sometimes null, if begin with an already existing conversation. Needs to be fixed!!!
-        console.log("The message: " + message)
-        const response = await axios.get('http://localhost:9090/generateStream/llama2', {
-            params: {
-                message: message,
-                uuid: uuid
-            }
-        });
 
-        return response.data;
-    } catch (error) {
-        console.error('Error sending message to backend:', error);
-        throw error;
-    }
-}
 
 export async function initializeProgram(uuid) {
     try {

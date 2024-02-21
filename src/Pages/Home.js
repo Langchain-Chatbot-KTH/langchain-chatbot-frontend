@@ -6,14 +6,13 @@ import saved from '../assets/bookmark.svg';
 import rocket from '../assets/rocket.svg';
 import sendBtn from '../assets/send.svg';
 import userIcon from '../assets/TansparentPerson.png';
-import imageLogo from '../assets/chain_icon.png';
+import imageLogo from '../assets/image_logo_medium.png';
 import {
     sendMsgToBackend,
     initializeProgram,
     fetchConversationById,
     startNewConversation,
-    sendMsgToBotBackend,
-    sendMsgToBotBackendStream,
+    sendMsgToBotBackendStream, appendMsgToBackend
 } from '../chatApi';
 import { initializeUUID } from "./UUID";
 import { Link } from "react-router-dom";
@@ -23,15 +22,12 @@ function Home() {
     const [firstIds, setFirstIds] = useState(null);
     const [selectedConversation, setSelectedConversation] = useState(null);
     const [isConversationEmpty, setIsConversationEmpty] = useState(true);
-    const [uuid, setuuid] = useState(null);
-    const [data, setData] = useState(null);
+    const [isSending, setIsSending] = useState(false);
 
     useEffect(() => {
         const initialize = async () => {
             try {
                 const uuid = await initializeUUID();
-                setuuid(uuid);
-
                 const ids = await initializeProgram(uuid);
 
                 if (!ids || ids.length === 0) {
@@ -43,86 +39,67 @@ function Home() {
                     const lastIndex = ids.length - 1;
                     await handleQueryClick(ids[lastIndex]);
                 }
-
             } catch (error) {
                 console.error('Error initializing UUID:', error);
             }
         };
 
-        // Function to initialize SSE
-        const initializeSSE = () => {
-            const sse = new EventSource(`http://localhost:9090/subscribe/b06c92b2-8fcc-41b0-90fe-a9a60051f559`);
-
-            sse.onmessage = (event) => {
-                console.log("The received message: " + event.data);
-                const data = event.data;
-                setData(data);
-            };
-
-            sse.onerror = () => {
-                // Error handling
-                console.error('SSE failed');
-                sse.close();
-            };
-
-            // Clean up the SSE connection when the component unmounts
-            return () => {
-                sse.close();
-            };
-        };
-
         initialize();
-
-        // Call the function to initialize SSE
-        const cleanup = initializeSSE();
-
-        // Return the cleanup function from useEffect
-        return cleanup;
     }, []);
-
-    useEffect(() => {
-        // This effect acts whenever 'data' changes and is not null.
-        const processData = async () => {
-            if (data) {
-                console.log("Data received from SSE: ", data);
-                try {
-                    // // Ensure sendMsgToBackend is awaited before proceeding
-                    await sendMsgToBackend(data, selectedConversation.id, 0);
-                    // // Once sendMsgToBackend is done, call handleQueryClick
-                    await handleQueryClick(selectedConversation.id);
-                    // setSelectedConversation(data);
-                } catch (error) {
-                    console.error('Error processing data:', error);
-                }
-            }
-        };
-    
-        processData();
-    }, [data]); // This effect depends on 'data'
-
-    const [isSending, setIsSending] = useState(false);
 
     const handleSend = async () => {
         const text = input;
-
         if (selectedConversation) {
             try {
                 setIsSending(true);
                 await sendMsgToBackend(text, selectedConversation.id, 1);
                 setInput('');
                 await handleQueryClick(selectedConversation.id);
-                // await sendMsgToBotBackend(text, uuid); // TextGenerate
-                await sendMsgToBotBackendStream(text, uuid); // StreamGenerate
+
                 if (selectedConversation.messages.length <= 1) {
                     await fetchQueryNames();
                 }
+                const response = await sendMsgToBotBackendStream(text, selectedConversation.id);
+                if (response.data === "Running"){
+                    handleStream(selectedConversation.id);
+                }
             } catch (error) {
                 console.error('Error sending message:', error);
-            } finally {
-                setIsSending(false);
             }
         } else {
             console.error('No conversation selected to send a message to.');
+        }
+    };
+
+    const handleStream = async (conversationId) => {
+        const uuid = localStorage.getItem('uuid');
+        const source = new EventSource(`http://localhost:9090/subscribe/${uuid}`);
+        const response = await sendMsgToBackend("", selectedConversation.id, 0);
+
+        source.onmessage = async (event) => {
+            const token = event.data;
+            if (token === "#FC9123CFAA1953123#") {
+                console.log("Stream Completed");
+                source.close();
+                setIsSending(false);
+            } else {
+                const lastMessageId = response.messages[response.messages.length - 1].id;
+                await appendMsgToBackend(lastMessageId, token);
+                await handleQueryClick(selectedConversation.id);
+                }
+            }
+
+        source.onerror = (error) => {
+            console.error('SSE Error:', error);
+        };
+    }
+
+
+    const sendSequenceToBackend = async (sequence, conversationId) => {
+        try {
+            await sendMsgToBackend(sequence, conversationId, 0);
+        } catch (error) {
+            console.error('Error sending sequence to backend:', error);
         }
     };
 
@@ -139,7 +116,6 @@ function Home() {
     const handleNewChat = async () => {
         try {
             const uuid = await initializeUUID();
-            setuuid(uuid);
             const newConversationId = await startNewConversation(uuid);
             setFirstIds((prevIds) => [...prevIds, newConversationId]);
             await handleQueryClick(newConversationId);
@@ -181,16 +157,23 @@ function Home() {
         }
     };
 
+    function rewriteText(text) {
+        text = text.trim().replace(/\s{2,}/g, ' ');
+
+        text = text.replace(/(\b[A-Za-z])(?=[^\w\s])/g, '$1 ').replace(/  +/g, ' ');
+
+        text = text.replace(/(\d+)\.\s+/g, (match, number) => `<br/>${number}. `);
+
+        text = text.replace(/\*([^*]+)\*/g, '<i>$1</i>');
+
+        text = text.replace(/'([^']+)'/g, '<b>$1</b>');
+
+        return text;
+    }
+
     useEffect(() => {
         fetchQueryNames();
     }, [firstIds]);
-
-    const processText = (text) => {
-        text = text.replace(/(\d+)\.\s*/g, "$1. ");
-        text = text.replace(/\*/g, "\n• ");
-        text = text.replace(/\n/g, "<br>");
-        return text;
-    };
 
     return (
         <div className="App">
@@ -251,7 +234,7 @@ function Home() {
                                 src={message.senderId === 0 ? imageLogo : userIcon}
                                 alt=""
                             />
-                            <p className="txt" dangerouslySetInnerHTML={{ __html: message.senderId === 0 ? processText(message.content) : message.content }}></p>
+                            <p className="txt" dangerouslySetInnerHTML={{ __html: rewriteText(message.content) }}></p>
                         </div>
                     ))}
                 </div>
@@ -264,11 +247,11 @@ function Home() {
                             ) : (<img src={sendBtn} alt="sendBtn"/>
                             )}
                         </button>
-
                     </div>
                     <p>WordCrafted can produce inaccurate information about data, claims, or facts. WordCrafted February 06 Version.</p>
                 </div>
             </div>
+
         </div>
     );
 }

@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api/conversations';
+const API_BASE_URL = 'http://localhost:8082/api/conversations';
 const OPEN_SOURCE_UUID_API = 'https://www.uuidtools.com/api/generate/v4';
 
 const checkUUIDInLocalStorage = () => {
