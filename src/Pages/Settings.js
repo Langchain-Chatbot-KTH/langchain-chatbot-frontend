@@ -1,14 +1,24 @@
-// Settings.js
+/**
+ * Settings component for managing user settings.
+ * @component
+ */
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './PagesStyle/Settings.css';
 
+/**
+ * Settings component.
+ * @returns {JSX.Element} Settings component JSX
+ */
 const Settings = () => {
     const [inputUUID, setInputUUID] = useState('');
     const [error, setError] = useState('');
     const storedUUID = localStorage.getItem('uuid');
 
+    /**
+     * Handles UUID change event.
+     */
     const handleUUIDChange = () => {
         if (isValidUUID(inputUUID)) {
             localStorage.setItem('uuid', inputUUID);
@@ -20,6 +30,11 @@ const Settings = () => {
         }
     };
 
+    /**
+     * Validates UUID format.
+     * @param {string} uuid - The UUID to validate
+     * @returns {boolean} True if UUID is valid, false otherwise
+     */
     const isValidUUID = (uuid) => {
         const uuidRegex = /^[a-f\d]{8}-[a-f\d]{4}-[1-5][a-f\d]{3}-[89ab][a-f\d]{3}-[a-f\d]{12}$/i;
         return uuidRegex.test(uuid);

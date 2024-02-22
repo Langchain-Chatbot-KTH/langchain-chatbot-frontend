@@ -1,5 +1,12 @@
 import axios from 'axios';
 
+/**
+ * Sends a message to the backend.
+ * @param {string} message - The message to send
+ * @param {string} conversationId - The ID of the conversation
+ * @param {number} senderId - The ID of the message sender
+ * @returns {Promise<any>} A Promise that resolves with the response data
+ */
 export async function sendMsgToBackend(message, conversationId, senderId) {
     try {
         const response = await axios.post(`http://localhost:8082/api/conversations/${conversationId}/send`, null, {
@@ -17,6 +24,12 @@ export async function sendMsgToBackend(message, conversationId, senderId) {
     }
 }
 
+/**
+ * Appends additional text to an existing message in the backend.
+ * @param {string} messageId - The ID of the message to append to
+ * @param {string} message - The additional text to append
+ * @returns {Promise<any>} A Promise that resolves with the response data
+ */
 export async function appendMsgToBackend(messageId, message) {
     try {
         const response = await axios.post(`http://localhost:8082/api/conversations/messages/${messageId}/addText`, null, {
@@ -32,7 +45,12 @@ export async function appendMsgToBackend(messageId, message) {
     }
 }
 
-
+/**
+ * Sends a message to the bot backend via stream.
+ * @param {string} message - The message to send
+ * @param {string} id - The ID of the conversation
+ * @returns {Promise<any>} A Promise that resolves with the response data
+ */
 export async function sendMsgToBotBackendStream(message, id) {
 
     const uuid = localStorage.getItem('uuid');
@@ -48,7 +66,7 @@ export async function sendMsgToBotBackendStream(message, id) {
         axios.get('http://localhost:9090/generateStream/model', {
             params: {
                 message: messageToSend,
-                model: "mistral",
+                model: "codellama",
                 uuid: uuid
             }
         });
@@ -61,6 +79,12 @@ export async function sendMsgToBotBackendStream(message, id) {
     }
 }
 
+/**
+ * Sends a message to the bot backend.
+ * @param {string} message - The message to send
+ * @param {string} id - The ID of the conversation
+ * @returns {Promise<any>} A Promise that resolves with the response data
+ */
 export async function sendMsgToBotBackend(message, id) {
     try {
 
@@ -88,8 +112,11 @@ export async function sendMsgToBotBackend(message, id) {
     }
 }
 
-
-
+/**
+ * Initializes the program by retrieving conversation IDs associated with a UUID.
+ * @param {string} uuid - The UUID
+ * @returns {Promise<string[] | null>} A Promise that resolves with an array of conversation IDs, or null if there was an error
+ */
 export async function initializeProgram(uuid) {
     try {
         const response = await axios.get(`http://localhost:8082/api/conversations/getByOwnerId`, {
@@ -105,6 +132,11 @@ export async function initializeProgram(uuid) {
     }
 }
 
+/**
+ * Fetches a conversation by its ID.
+ * @param {string} id - The ID of the conversation to fetch
+ * @returns {Promise<any>} A Promise that resolves with the conversation data
+ */
 export async function fetchConversationById(id) {
     try {
         const response = await axios.get(`http://localhost:8082/api/conversations/${id}`);
@@ -115,6 +147,11 @@ export async function fetchConversationById(id) {
     }
 }
 
+/**
+ * Starts a new conversation.
+ * @param {string} ownerId - The ID of the conversation owner
+ * @returns {Promise<string>} A Promise that resolves with the ID of the new conversation
+ */
 export async function startNewConversation(ownerId) {
     try {
         const response = await axios.post('http://localhost:8082/api/conversations/start', null, {

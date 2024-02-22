@@ -1,3 +1,7 @@
+/**
+ * Home component for the chat application.
+ * @component
+ */
 import React, { useEffect, useState } from 'react';
 import './PagesStyle/HomeStyle.css';
 import msgIcon from '../assets/message.svg';
@@ -13,16 +17,25 @@ import {
     fetchConversationById,
     startNewConversation,
     sendMsgToBotBackendStream, appendMsgToBackend
-} from '../chatApi';
-import { initializeUUID } from "./UUID";
+} from './PagesLogic/chatApi';
+import { initializeUUID } from "./PagesLogic/UUID";
 import { Link } from "react-router-dom";
+import { parseText } from "./PagesLogic/textParser";
 
+/**
+ * Home component responsible for handling chat functionalities.
+ * @returns {JSX.Element} Home component JSX
+ */
 function Home() {
     const [input, setInput] = useState('');
     const [firstIds, setFirstIds] = useState(null);
     const [selectedConversation, setSelectedConversation] = useState(null);
     const [isConversationEmpty, setIsConversationEmpty] = useState(true);
     const [isSending, setIsSending] = useState(false);
+
+    /**
+     * Initializes the component.
+     */
 
     useEffect(() => {
         const initialize = async () => {
@@ -47,6 +60,9 @@ function Home() {
         initialize();
     }, []);
 
+    /**
+     * Handles sending a message.
+     */
     const handleSend = async () => {
         const text = input;
         if (selectedConversation) {
@@ -71,38 +87,42 @@ function Home() {
         }
     };
 
+    /**
+     * Handles streaming messages.
+     * @param {string} conversationId - The ID of the conversation
+     */
     const handleStream = async (conversationId) => {
         const uuid = localStorage.getItem('uuid');
         const source = new EventSource(`http://localhost:9090/subscribe/${uuid}`);
         const response = await sendMsgToBackend("", selectedConversation.id, 0);
 
         source.onmessage = async (event) => {
-            const token = event.data;
-            if (token === "#FC9123CFAA1953123#") {
-                console.log("Stream Completed");
-                source.close();
-                setIsSending(false);
-            } else {
-                const lastMessageId = response.messages[response.messages.length - 1].id;
-                await appendMsgToBackend(lastMessageId, token);
-                await handleQueryClick(selectedConversation.id);
+            let tokens = event.data.match(/"([^"]*)"|[^"\s]+/g);
+            if (tokens) {
+                tokens = tokens.map(token => token.replace(/^"|"$/g, ''));
+                for (const token of tokens) {
+                    if (token === "#FC9123CFAA1953123#") {
+                        console.log("Stream Completed");
+                        source.close();
+                        setIsSending(false);
+                    } else {
+                        const lastMessageId = response.messages[response.messages.length - 1].id;
+                        await appendMsgToBackend(lastMessageId, token);
+                        await handleQueryClick(selectedConversation.id);
+                    }
                 }
             }
+        }
 
         source.onerror = (error) => {
             console.error('SSE Error:', error);
         };
     }
 
-
-    const sendSequenceToBackend = async (sequence, conversationId) => {
-        try {
-            await sendMsgToBackend(sequence, conversationId, 0);
-        } catch (error) {
-            console.error('Error sending sequence to backend:', error);
-        }
-    };
-
+    /**
+     * Handles the click event on a conversation.
+     * @param {string} id - The ID of the conversation
+     */
     const handleQueryClick = async (id) => {
         try {
             const conversation = await fetchConversationById(id);
@@ -113,6 +133,9 @@ function Home() {
         }
     };
 
+    /**
+     * Handles starting a new chat.
+     */
     const handleNewChat = async () => {
         try {
             const uuid = await initializeUUID();
@@ -126,13 +149,15 @@ function Home() {
 
     const [queryNames, setQueryNames] = useState([]);
 
+    /**
+     * Fetches names of conversations.
+     */
     const fetchQueryNames = async () => {
         try {
             if (!firstIds) {
                 console.warn('firstIds is null. Skipping fetchQueryNames.');
                 return;
             }
-
             const names = await Promise.all(
                 firstIds.slice().reverse().map(async (id) => {
                     let queryName = 'New Conversation';
@@ -150,26 +175,12 @@ function Home() {
                     return queryName;
                 })
             );
-
             setQueryNames(names);
         } catch (error) {
             console.error('Error in fetchQueryNames:', error);
         }
     };
 
-    function rewriteText(text) {
-        text = text.trim().replace(/\s{2,}/g, ' ');
-
-        text = text.replace(/(\b[A-Za-z])(?=[^\w\s])/g, '$1 ').replace(/  +/g, ' ');
-
-        text = text.replace(/(\d+)\.\s+/g, (match, number) => `<br/>${number}. `);
-
-        text = text.replace(/\*([^*]+)\*/g, '<i>$1</i>');
-
-        text = text.replace(/'([^']+)'/g, '<b>$1</b>');
-
-        return text;
-    }
 
     useEffect(() => {
         fetchQueryNames();
@@ -234,7 +245,7 @@ function Home() {
                                 src={message.senderId === 0 ? imageLogo : userIcon}
                                 alt=""
                             />
-                            <p className="txt" dangerouslySetInnerHTML={{ __html: rewriteText(message.content) }}></p>
+                            <p className="txt" dangerouslySetInnerHTML={{ __html: parseText(message.content) }}></p>
                         </div>
                     ))}
                 </div>
