@@ -358,3 +358,136 @@ body{
 .send:hover{
     transform: scale(1.1);
 }
+
+.transparentBox {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(9, 8, 3, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 20px rgba(9, 8, 3, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.optionBox {
+    margin-bottom: 20px;
+}
+
+.optionBox select {
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    border: none;
+    background-color: #f3f1f5;
+    color: #080a17;
+    font-size: 16px;
+    outline: none;
+}
+
+.inputBox {
+    width: 100%;
+}
+
+.inputBox input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #f3f1f5;
+    color: #080a17;
+    font-size: 16px;
+    outline: none;
+}
+
+.inputBox input[type="file"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #f3f1f5;
+    color: #080a17;
+    font-size: 16px;
+    outline: none;
+    cursor: pointer;
+}
+
+.inputBox input[type="file"]::-webkit-file-upload-button {
+    background-color: #d40573;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+
+.inputBox input[type="file"]:hover::-webkit-file-upload-button {
+    background: rgba(38, 29, 6, 0.98);
+}
+
+.inputBox input[type="file"]::before {
+    content: "Choose a file";
+    display: block;
+    width: calc(100% - 20px);
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f3f1f5;
+    font-size: 16px;
+    outline: none;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.inputBox input[type="file"]:hover::before {
+    background-color: #e0e0e0;
+}
+
+.sendBtn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+}
+
+.inpFile{
+    margin-top: 2rem;
+    padding: 0.5rem;
+    background: rgb(243, 241, 245);
+    color: rgb(8, 10, 23);
+    display: flex;
+    align-items: center;
+    border-radius: 0.5rem;
+    width: 32rem;
+}
+
+.inpFile>input {
+    width: calc(100% - 3rem);
+    outline: none;
+    padding: 1.25rem;
+    color: rgb(8, 10, 23);
+}
+
+.inpFile>input, .send{
+    background: transparent;
+    border: none;
+}
+
+.chatFooter>p{
+    margin: 2rem 0;
+}
+
+.send:hover{
+    cursor: pointer;
+}
+
+.send:hover{
+    transform: scale(1.1);
+}

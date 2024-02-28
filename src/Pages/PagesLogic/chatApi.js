@@ -52,7 +52,6 @@ export async function appendMsgToBackend(messageId, message) {
  * @returns {Promise<any>} A Promise that resolves with the response data
  */
 export async function sendMsgToBotBackendStream(message, id) {
-
     const uuid = localStorage.getItem('uuid');
     const conversation = await fetchConversationById(id);
 
@@ -66,7 +65,6 @@ export async function sendMsgToBotBackendStream(message, id) {
         axios.get('http://localhost:9090/generateStream/model', {
             params: {
                 message: messageToSend,
-                model: "codellama",
                 uuid: uuid
             }
         });
@@ -80,27 +78,77 @@ export async function sendMsgToBotBackendStream(message, id) {
 }
 
 /**
+ * Sends a message with a file to the bot backend via stream.
+ * @param {File} file - The file to send
+ * @param {string} message - The message to send
+ * @returns {Promise<any>} A Promise that resolves with the response data
+ */
+export async function sendMsgToBotBackendStreamFile(file, message) {
+    try {
+        const formData = new FormData();
+        formData.append('document', file);
+        formData.append('message', message);
+
+        const response = await axios.post('http://localhost:9090/generateTextFromDocument/document', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Error sending message with document to backend:', error);
+        throw error;
+    }
+}
+
+
+/**
+ * Sends a message with an image to the bot backend via stream.
+ * @param {File} image - The image to send
+ * @param {string} message - The message to send
+ * @param {string} id - The ID of the conversation
+ * @returns {Promise<any>} A Promise that resolves with the response data
+ */
+export async function sendMsgToBotBackendStreamImage(image, message) {
+    alert("NOT IMPLEMENTED YET");
+}
+
+/**
+ * Sends a message with a URL to the bot backend.
+ * @param {string} url - The URL to send
+ * @param {string} message - The message to send
+ * @returns {Promise<any>} A Promise that resolves with the response data
+ */
+export async function sendMsgToBotBackendStreamUrl(url, message) {
+    try {
+        const response = await axios.get('http://localhost:9090/generateTextFromURL/url', {
+            params: {
+                message: message,
+                urlPath: url,
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Error sending message with URL to backend:', error);
+        throw error;
+    }
+}
+
+/**
  * Sends a message to the bot backend.
  * @param {string} message - The message to send
  * @param {string} id - The ID of the conversation
  * @returns {Promise<any>} A Promise that resolves with the response data
  */
-export async function sendMsgToBotBackend(message, id) {
+export async function sendMsgToBotBackend(message) {
     try {
-
         const uuid = localStorage.getItem('uuid');
-        const conversation = await fetchConversationById(id);
-
-        const previousBotMessages = conversation.messages
-            .filter(message => message.senderId === 0)
-            .map(botMessage => "Previous Bot Message: " + botMessage.content);
-
-        const messageToSend = previousBotMessages.join('\n') + '\nLatest Message From User: ' + message;
 
         const response = await axios.get('http://localhost:9090/generateText/WholeText', {
             params: {
-                message: messageToSend,
-                modelName: "phi",
+                message: message,
                 uuid: uuid
             }
         });

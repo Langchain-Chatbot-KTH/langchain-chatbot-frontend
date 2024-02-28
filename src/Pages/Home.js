@@ -16,7 +16,11 @@ import {
     initializeProgram,
     fetchConversationById,
     startNewConversation,
-    sendMsgToBotBackendStream, appendMsgToBackend
+    sendMsgToBotBackendStream,
+    appendMsgToBackend,
+    sendMsgToBotBackend,
+    sendMsgToBotBackendStreamFile,
+    sendMsgToBotBackendStreamImage, sendMsgToBotBackendStreamUrl
 } from './PagesLogic/chatApi';
 import { initializeUUID } from "./PagesLogic/UUID";
 import { Link } from "react-router-dom";
@@ -28,101 +32,90 @@ import { parseText } from "./PagesLogic/textParser";
  */
 function Home() {
     const [input, setInput] = useState('');
+    const [transparentBoxVisible, setTransparentBoxVisible] = useState(false);
+    const [boxType, setBoxType] = useState('file');
     const [firstIds, setFirstIds] = useState(null);
     const [selectedConversation, setSelectedConversation] = useState(null);
     const [isConversationEmpty, setIsConversationEmpty] = useState(true);
     const [isSending, setIsSending] = useState(false);
+    const [queryNames, setQueryNames] = useState([]);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedUrl, setSelectedUrl] = useState('');
 
-    /**
-     * Initializes the component.
-     */
+    const handleTransparentBoxToggle = () => {
+        setTransparentBoxVisible(!transparentBoxVisible);
+    };
 
-    useEffect(() => {
-        const initialize = async () => {
-            try {
-                const uuid = await initializeUUID();
-                const ids = await initializeProgram(uuid);
+    const handleBoxTypeChange = (type) => {
+        setBoxType(type);
+    };
 
-                if (!ids || ids.length === 0) {
-                    const newConversationId = await startNewConversation(uuid);
-                    setFirstIds([newConversationId]);
-                    await handleQueryClick(newConversationId);
-                } else {
-                    setFirstIds(ids);
-                    const lastIndex = ids.length - 1;
-                    await handleQueryClick(ids[lastIndex]);
-                }
-            } catch (error) {
-                console.error('Error initializing UUID:', error);
-            }
-        };
-
-        initialize();
-    }, []);
-
-    /**
-     * Handles sending a message.
-     */
     const handleSend = async () => {
         const text = input;
         if (selectedConversation) {
             try {
                 setIsSending(true);
-                await sendMsgToBackend(text, selectedConversation.id, 1);
-                setInput('');
-                await handleQueryClick(selectedConversation.id);
+                let response;
 
-                if (selectedConversation.messages.length <= 1) {
-                    await fetchQueryNames();
+                if(selectedFile !== null || selectedImage !== null || selectedUrl !== ''){
+                    switch (boxType) {
+                        case 'file':
+                            response = await sendMsgToBotBackendStreamFile(selectedFile, text);
+                            console.log(response)
+                            break;
+                        case 'image':
+                            response = await sendMsgToBotBackendStreamImage(selectedImage, text);
+                            break;
+                        case 'url':
+                            response = await sendMsgToBotBackendStreamUrl(selectedUrl, text);
+                            console.log(response)
+                            break;
+                        default:
+
+                    }
+                    setSelectedFile(null);
+                    setSelectedImage(null);
+                    setSelectedUrl('');
+                    setBoxType('file');
+                } else {
+                    await sendMsgToBackend(text, selectedConversation.id, 1);
+                    setInput('');
+                    await handleQueryClick(selectedConversation.id);
+
+                    if (selectedConversation.messages.length <= 1) {
+                        await fetchQueryNames();
+                    }
+                    const response = await sendMsgToBotBackendStream(text, selectedConversation.id);
+                    if (response.data === "Running"){
+                        handleStream(selectedConversation.id);
+                    }
                 }
-                const response = await sendMsgToBotBackendStream(text, selectedConversation.id);
-                if (response.data === "Running"){
-                    handleStream(selectedConversation.id);
-                }
+
+                setTransparentBoxVisible(false);
+                setInput('');
+
             } catch (error) {
                 console.error('Error sending message:', error);
+            } finally {
+                setIsSending(false);
             }
         } else {
             console.error('No conversation selected to send a message to.');
         }
     };
+    const handleFileSelect = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
 
-    /**
-     * Handles streaming messages.
-     * @param {string} conversationId - The ID of the conversation
-     */
-    const handleStream = async (conversationId) => {
-        const uuid = localStorage.getItem('uuid');
-        const source = new EventSource(`http://localhost:9090/subscribe/${uuid}`);
-        const response = await sendMsgToBackend("", selectedConversation.id, 0);
+    const handleImageSelect = (event) => {
+        setSelectedImage(event.target.files[0]);
+    };
 
-        source.onmessage = async (event) => {
-            let tokens = event.data.match(/"([^"]*)"|[^"\s]+/g);
-            if (tokens) {
-                tokens = tokens.map(token => token.replace(/^"|"$/g, ''));
-                for (const token of tokens) {
-                    if (token === "#FC9123CFAA1953123#") {
-                        console.log("Stream Completed");
-                        source.close();
-                        setIsSending(false);
-                    } else {
-                        const lastMessageId = response.messages[response.messages.length - 1].id;
-                        await appendMsgToBackend(lastMessageId, token);
-                        await handleQueryClick(selectedConversation.id);
-                    }
-                }
-            }
-        }
+    const handleUrlInput = (event) => {
+        setSelectedUrl(event.target.value);
+    };
 
-        source.onerror = (error) => {
-            console.error('SSE Error:', error);
-        };
-    }
-
-    /**
-     * Handles the click event on a conversation.
-     * @param {string} id - The ID of the conversation
-     */
     const handleQueryClick = async (id) => {
         try {
             const conversation = await fetchConversationById(id);
@@ -133,9 +126,6 @@ function Home() {
         }
     };
 
-    /**
-     * Handles starting a new chat.
-     */
     const handleNewChat = async () => {
         try {
             const uuid = await initializeUUID();
@@ -147,11 +137,6 @@ function Home() {
         }
     };
 
-    const [queryNames, setQueryNames] = useState([]);
-
-    /**
-     * Fetches names of conversations.
-     */
     const fetchQueryNames = async () => {
         try {
             if (!firstIds) {
@@ -181,10 +166,60 @@ function Home() {
         }
     };
 
+    useEffect(() => {
+        const initialize = async () => {
+            try {
+                const uuid = await initializeUUID();
+                const ids = await initializeProgram(uuid);
+
+                if (!ids || ids.length === 0) {
+                    const newConversationId = await startNewConversation(uuid);
+                    setFirstIds([newConversationId]);
+                    await handleQueryClick(newConversationId);
+                } else {
+                    setFirstIds(ids);
+                    const lastIndex = ids.length - 1;
+                    await handleQueryClick(ids[lastIndex]);
+                }
+            } catch (error) {
+                console.error('Error initializing UUID:', error);
+            }
+        };
+
+        initialize();
+    }, []);
 
     useEffect(() => {
         fetchQueryNames();
     }, [firstIds]);
+
+    const handleStream = async (conversationId) => {
+        const uuid = localStorage.getItem('uuid');
+        const source = new EventSource(`http://localhost:9090/subscribe/${uuid}`);
+        const response = await sendMsgToBackend("", selectedConversation.id, 0);
+
+        source.onmessage = async (event) => {
+            let tokens = event.data.match(/"([^"]*)"|[^"\s]+/g);
+            if (tokens) {
+                tokens = tokens.map(token => token.replace(/^"|"$/g, ''));
+                for (const token of tokens) {
+                    if (token === "#FC9123CFAA1953123#") {
+                        console.log("Stream Completed");
+                        source.close();
+                        setIsSending(false);
+                    } else {
+                        const lastMessageId = response.messages[response.messages.length - 1].id;
+                        await appendMsgToBackend(lastMessageId, token);
+                        await handleQueryClick(selectedConversation.id);
+                    }
+                }
+            }
+        }
+
+        source.onerror = (error) => {
+            console.error('SSE Error:', error);
+        };
+    };
 
     return (
         <div className="App">
@@ -217,7 +252,7 @@ function Home() {
                 </div>
                 <div className="lowerSide">
                     <div className="listItems"><img src={home} alt="home" className="listItemsImg"/>Home</div>
-                    <div className="listItems"><img src={saved} alt="saved" className="listItemsImg"/>Model</div>
+                    <div className="listItems" onClick={handleTransparentBoxToggle}><img src={saved} alt="saved" className="listItemsImg"/>File</div>
                     <Link
                         to="/settings"
                         className="listItems"
@@ -262,7 +297,42 @@ function Home() {
                     <p>WordCrafted can produce inaccurate information about data, claims, or facts. WordCrafted February 06 Version.</p>
                 </div>
             </div>
-
+            {transparentBoxVisible && (
+                <div className="transparentBox">
+                    <div className="optionBox">
+                        <select value={boxType} onChange={(e) => handleBoxTypeChange(e.target.value)}>
+                            <option value="file">File</option>
+                            <option value="image">Image</option>
+                            <option value="url">URL</option>
+                        </select>
+                    </div>
+                    {boxType === 'file' && (
+                        <div className="inputBox">
+                            <input type="file" accept=".txt,.pdf" onChange={handleFileSelect} />
+                        </div>
+                    )}
+                    {boxType === 'image' && (
+                        <div className="inputBox">
+                            <input type="file" accept="image/*" onChange={handleImageSelect} />
+                        </div>
+                    )}
+                    {boxType === 'url' && (
+                        <div className="inputBox">
+                            <input type="text" placeholder="Enter URL" value={selectedUrl} onChange={handleUrlInput} />
+                        </div>
+                    )}
+                    <div className="inpFile">
+                        <input type="text" placeholder="Send Message" value={input} onChange={(e) => setInput(e.target.value)} />
+                        <button className="send" onClick={handleSend} disabled={isSending}>
+                            {isSending ? (
+                                <i className="fa-solid fa-sync fa-spin"></i>
+                            ) : (
+                                <img src={sendBtn} alt="sendBtn" />
+                            )}
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
