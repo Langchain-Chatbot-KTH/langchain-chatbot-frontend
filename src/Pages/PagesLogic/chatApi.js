@@ -48,24 +48,17 @@ export async function appendMsgToBackend(messageId, message) {
 /**
  * Sends a message to the bot backend via stream.
  * @param {string} message - The message to send
- * @param {string} id - The ID of the conversation
+ * @param conversationId - conversation I'd
  * @returns {Promise<any>} A Promise that resolves with the response data
  */
-export async function sendMsgToBotBackendStream(message, id) {
+export async function sendMsgToBotBackendStream(message, conversationId) {
     const uuid = localStorage.getItem('uuid');
-    const conversation = await fetchConversationById(id);
-
-    const previousBotMessages = conversation.messages
-        .filter(message => message.senderId === 0)
-        .map(botMessage => "Previous Bot Message: " + botMessage.content);
-
-    const messageToSend = previousBotMessages.join('\n') + '\nUser:' + message;
-
     try {
-        axios.get('http://localhost:9090/generateStream/model', {
+        await axios.get('http://localhost:9090/generateStream/model', {
             params: {
-                message: messageToSend,
-                uuid: uuid
+                message: message,
+                uuid: uuid,
+                id: conversationId
             }
         });
 
@@ -81,15 +74,19 @@ export async function sendMsgToBotBackendStream(message, id) {
  * Sends a message with a file to the bot backend via stream.
  * @param {File} file - The file to send
  * @param {string} message - The message to send
+ * @param id {conversationId}
  * @returns {Promise<any>} A Promise that resolves with the response data
  */
-export async function sendMsgToBotBackendStreamFile(file, message) {
+export async function sendMsgToBotBackendStreamFile(file, message, id) {
+    const uuid = localStorage.getItem('uuid');
     try {
         const formData = new FormData();
-        formData.append('document', file);
         formData.append('message', message);
+        formData.append('document', file);
+        formData.append('uuid', uuid);
+        formData.append('id', id);
 
-        const response = await axios.post('http://localhost:9090/generateTextFromDocument/document', formData, {
+        const response = await axios.post('http://localhost:9090/generateStreamFromDocument/documentStream', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -110,7 +107,7 @@ export async function sendMsgToBotBackendStreamFile(file, message) {
  * @param {string} id - The ID of the conversation
  * @returns {Promise<any>} A Promise that resolves with the response data
  */
-export async function sendMsgToBotBackendStreamImage(image, message) {
+export async function sendMsgToBotBackendStreamImage(image, message, id) {
     alert("NOT IMPLEMENTED YET");
 }
 
@@ -118,14 +115,18 @@ export async function sendMsgToBotBackendStreamImage(image, message) {
  * Sends a message with a URL to the bot backend.
  * @param {string} url - The URL to send
  * @param {string} message - The message to send
+ * @param id {conversationId}
  * @returns {Promise<any>} A Promise that resolves with the response data
  */
-export async function sendMsgToBotBackendStreamUrl(url, message) {
+export async function sendMsgToBotBackendStreamUrl(url, message, id) {
+    const uuid = localStorage.getItem('uuid');
     try {
-        const response = await axios.get('http://localhost:9090/generateTextFromURL/url', {
+        const response = await axios.get('http://localhost:9090/generateStreamFromURL/url', {
             params: {
                 message: message,
                 urlPath: url,
+                uuid: uuid,
+                id: id
             }
         });
 

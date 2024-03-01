@@ -17,8 +17,6 @@ import {
     fetchConversationById,
     startNewConversation,
     sendMsgToBotBackendStream,
-    appendMsgToBackend,
-    sendMsgToBotBackend,
     sendMsgToBotBackendStreamFile,
     sendMsgToBotBackendStreamImage, sendMsgToBotBackendStreamUrl
 } from './PagesLogic/chatApi';
@@ -42,6 +40,9 @@ function Home() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [selectedUrl, setSelectedUrl] = useState('');
+    const [tokenString, setTokenString] = useState('');
+    const [urlError, setUrlError] = useState('');
+
 
     const handleTransparentBoxToggle = () => {
         setTransparentBoxVisible(!transparentBoxVisible);
@@ -52,28 +53,50 @@ function Home() {
     };
 
     const handleSend = async () => {
-        const text = input;
+        let text = input;
+        setTokenString("");
         if (selectedConversation) {
+            const connection = await handleInitSse();
             try {
                 setIsSending(true);
-                let response;
 
                 if(selectedFile !== null || selectedImage !== null || selectedUrl !== ''){
                     switch (boxType) {
                         case 'file':
-                            response = await sendMsgToBotBackendStreamFile(selectedFile, text);
-                            console.log(response)
+                            sendMsgToBotBackendStreamFile(selectedFile, text, selectedConversation.id);
+                            handleStream(connection);
+                            text += "\n";
+                            text += selectedFile.name;
                             break;
                         case 'image':
-                            response = await sendMsgToBotBackendStreamImage(selectedImage, text);
+                            sendMsgToBotBackendStreamImage(selectedImage, text, selectedConversation.id);
+                            handleStream(connection);
                             break;
                         case 'url':
-                            response = await sendMsgToBotBackendStreamUrl(selectedUrl, text);
-                            console.log(response)
+                            if (!isValidURL(selectedUrl)) {
+                                setUrlError('The URL is in the wrong format. Please enter a valid URL.');
+                                setIsSending(false);
+                                setTimeout(() => {
+                                    setUrlError('');
+                                }, 5000);
+                                setSelectedUrl('');
+                                return;
+                            }
+                            text += "\n";
+                            text += selectedUrl;
+                            sendMsgToBotBackendStreamUrl(selectedUrl, text, selectedConversation.id);
+                            handleStream(connection);
                             break;
-                        default:
-
                     }
+
+                    await sendMsgToBackend(text, selectedConversation.id, 1);
+                    setInput('');
+                    await handleQueryClick(selectedConversation.id);
+
+                    if (selectedConversation.messages.length <= 1) {
+                        await fetchQueryNames();
+                    }
+
                     setSelectedFile(null);
                     setSelectedImage(null);
                     setSelectedUrl('');
@@ -86,24 +109,33 @@ function Home() {
                     if (selectedConversation.messages.length <= 1) {
                         await fetchQueryNames();
                     }
-                    const response = await sendMsgToBotBackendStream(text, selectedConversation.id);
-                    if (response.data === "Running"){
-                        handleStream(selectedConversation.id);
-                    }
+                    sendMsgToBotBackendStream(text, selectedConversation.id);
+                    handleStream(connection);
                 }
 
                 setTransparentBoxVisible(false);
                 setInput('');
+                setTokenString('');
 
             } catch (error) {
-                console.error('Error sending message:', error);
-            } finally {
                 setIsSending(false);
+                console.error('Error sending message:', error);
             }
         } else {
             console.error('No conversation selected to send a message to.');
         }
     };
+
+    function isValidURL(string) {
+        var urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+        return urlRegex.test(string);
+    }
+
+    const handleInitSse = async () => {
+        const uuid = localStorage.getItem('uuid');
+        return new EventSource(`http://localhost:9090/subscribe/${uuid}`);
+    };
+
     const handleFileSelect = (event) => {
         setSelectedFile(event.target.files[0]);
     };
@@ -128,6 +160,7 @@ function Home() {
 
     const handleNewChat = async () => {
         try {
+            setTokenString("");
             const uuid = await initializeUUID();
             const newConversationId = await startNewConversation(uuid);
             setFirstIds((prevIds) => [...prevIds, newConversationId]);
@@ -193,10 +226,8 @@ function Home() {
         fetchQueryNames();
     }, [firstIds]);
 
-    const handleStream = async (conversationId) => {
-        const uuid = localStorage.getItem('uuid');
-        const source = new EventSource(`http://localhost:9090/subscribe/${uuid}`);
-        const response = await sendMsgToBackend("", selectedConversation.id, 0);
+    const handleStream = async (source) => {
+        let tokenSum = "";
 
         source.onmessage = async (event) => {
             let tokens = event.data.match(/"([^"]*)"|[^"\s]+/g);
@@ -204,13 +235,12 @@ function Home() {
                 tokens = tokens.map(token => token.replace(/^"|"$/g, ''));
                 for (const token of tokens) {
                     if (token === "#FC9123CFAA1953123#") {
-                        console.log("Stream Completed");
-                        source.close();
+                        await sendMsgToBackend(tokenSum, selectedConversation.id, 0);
                         setIsSending(false);
+                        source.close();
                     } else {
-                        const lastMessageId = response.messages[response.messages.length - 1].id;
-                        await appendMsgToBackend(lastMessageId, token);
-                        await handleQueryClick(selectedConversation.id);
+                        tokenSum += token;
+                        setTokenString(prevTokenString => prevTokenString + token);
                     }
                 }
             }
@@ -219,7 +249,7 @@ function Home() {
         source.onerror = (error) => {
             console.error('SSE Error:', error);
         };
-    };
+    }
 
     return (
         <div className="App">
@@ -283,6 +313,12 @@ function Home() {
                             <p className="txt" dangerouslySetInnerHTML={{ __html: parseText(message.content) }}></p>
                         </div>
                     ))}
+                    {tokenString && (
+                        <div className='chat bot'>
+                            <img className="chatImg" src={imageLogo} alt=""/>
+                            <p className="txt" dangerouslySetInnerHTML={{ __html: parseText(tokenString) }}></p>
+                        </div>
+                    )}
                 </div>
                 <div className="chatFooter">
                     <div className="inp">
@@ -316,21 +352,12 @@ function Home() {
                             <input type="file" accept="image/*" onChange={handleImageSelect} />
                         </div>
                     )}
+                    {urlError && <p className="error">{urlError}</p>}
                     {boxType === 'url' && (
                         <div className="inputBox">
                             <input type="text" placeholder="Enter URL" value={selectedUrl} onChange={handleUrlInput} />
                         </div>
                     )}
-                    <div className="inpFile">
-                        <input type="text" placeholder="Send Message" value={input} onChange={(e) => setInput(e.target.value)} />
-                        <button className="send" onClick={handleSend} disabled={isSending}>
-                            {isSending ? (
-                                <i className="fa-solid fa-sync fa-spin"></i>
-                            ) : (
-                                <img src={sendBtn} alt="sendBtn" />
-                            )}
-                        </button>
-                    </div>
                 </div>
             )}
         </div>
