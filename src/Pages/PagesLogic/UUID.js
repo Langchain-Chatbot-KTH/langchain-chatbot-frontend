@@ -9,7 +9,7 @@ import axios from 'axios';
  * The base URL for the API.
  * @constant {string}
  */
-const API_BASE_URL = 'http://localhost:8082/api/conversations';
+const API_BASE_URL = 'http://localhost:9090/api/conversations';
 
 /**
  * The API endpoint for generating a new UUID from an open-source API.

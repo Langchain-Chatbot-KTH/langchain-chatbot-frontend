@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="73639153-e849-4962-a936-7f3f80058887" name="Changes" comment="Able to send docuements and urls for analysis">
+    <list default="true" id="73639153-e849-4962-a936-7f3f80058887" name="Changes" comment="Able to send docuements and urls for analysis and get stream response">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/Home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pages/PagesLogic/UUID.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PagesLogic/UUID.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/PagesLogic/chatApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PagesLogic/chatApi.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pages/PagesStyle/HomeStyle.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PagesStyle/HomeStyle.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -136,7 +136,18 @@
       <workItem from="1709224071981" duration="6405000" />
       <workItem from="1709238580366" duration="6133000" />
       <workItem from="1709290304787" duration="5000" />
-      <workItem from="1709291227619" duration="2764000" />
+      <workItem from="1709291227619" duration="2799000" />
+      <workItem from="1709313197416" duration="1825000" />
+      <workItem from="1709323876152" duration="1279000" />
+      <workItem from="1709542756890" duration="881000" />
+      <workItem from="1709547181037" duration="13000" />
+      <workItem from="1709576200044" duration="648000" />
+      <workItem from="1713272352606" duration="1228000" />
+      <workItem from="1713356052886" duration="1980000" />
+      <workItem from="1713441501543" duration="48000" />
+      <workItem from="1713961326012" duration="6128000" />
+      <workItem from="1714314361052" duration="11000" />
+      <workItem from="1718609392816" duration="5206000" />
     </task>
     <task id="LOCAL−00001" summary="Alpha 1.0 - Changed Settings to redirect to / if uuid update is successful">
       <option name="closed" value="true" />
@@ -215,7 +226,14 @@
       <option name="presentableId" value="LOCAL−00011" />
       <updated>1709110597292</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL−00012" summary="Able to send docuements and urls for analysis and get stream response">
+      <option name="closed" value="true" />
+      <created>1709294156849</created>
+      <option name="number" value="LOCAL−00012" />
+      <option name="presentableId" value="LOCAL−00012" />
+      <updated>1709294156849</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -246,6 +264,7 @@
     <MESSAGE value="Fixed Streaming for frontend" />
     <MESSAGE value="Implemented TextParser.js and parsing for incomming stream as Json format" />
     <MESSAGE value="Able to send docuements and urls for analysis" />
-    <option name="LAST_COMMIT_MESSAGE" value="Able to send docuements and urls for analysis" />
+    <MESSAGE value="Able to send docuements and urls for analysis and get stream response" />
+    <option name="LAST_COMMIT_MESSAGE" value="Able to send docuements and urls for analysis and get stream response" />
   </component>
 </project>

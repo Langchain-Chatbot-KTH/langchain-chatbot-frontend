@@ -9,7 +9,7 @@ import axios from 'axios';
  */
 export async function sendMsgToBackend(message, conversationId, senderId) {
     try {
-        const response = await axios.post(`http://localhost:8082/api/conversations/${conversationId}/send`, null, {
+        const response = await axios.post(`http://localhost:9090/api/conversations/${conversationId}/send`, null, {
             params: {
                 conversationId: conversationId,
                 content: message,
@@ -32,7 +32,7 @@ export async function sendMsgToBackend(message, conversationId, senderId) {
  */
 export async function appendMsgToBackend(messageId, message) {
     try {
-        const response = await axios.post(`http://localhost:8082/api/conversations/messages/${messageId}/addText`, null, {
+        const response = await axios.post(`http://localhost:9090/api/conversations/messages/${messageId}/addText`, null, {
             params: {
                 messageId: messageId,
                 additionalText: message,
@@ -58,11 +58,12 @@ export async function sendMsgToBotBackendStream(message, conversationId) {
             params: {
                 message: message,
                 uuid: uuid,
+                modelName: "llama3",
                 id: conversationId
             }
         });
 
-        return await axios.get('http://localhost:9090/generateStream/health');
+        //return await axios.get('http://localhost:9090/generateStream/health');
 
     } catch (error) {
         console.error('Error sending message to backend:', error);
@@ -168,7 +169,7 @@ export async function sendMsgToBotBackend(message) {
  */
 export async function initializeProgram(uuid) {
     try {
-        const response = await axios.get(`http://localhost:8082/api/conversations/getByOwnerId`, {
+        const response = await axios.get(`http://localhost:9090/api/conversations/getByOwnerId`, {
             params: {
                 ownerId: uuid
             }
@@ -188,7 +189,7 @@ export async function initializeProgram(uuid) {
  */
 export async function fetchConversationById(id) {
     try {
-        const response = await axios.get(`http://localhost:8082/api/conversations/${id}`);
+        const response = await axios.get(`http://localhost:9090/api/conversations/${id}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching conversation:', error);
@@ -203,7 +204,7 @@ export async function fetchConversationById(id) {
  */
 export async function startNewConversation(ownerId) {
     try {
-        const response = await axios.post('http://localhost:8082/api/conversations/start', null, {
+        const response = await axios.post('http://localhost:9090/api/conversations/start', null, {
             params: {
                 ownerId: ownerId
             }

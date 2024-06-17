@@ -52,7 +52,25 @@ function Home() {
         setBoxType(type);
     };
 
+    let startTime;
+
+    function startTimer() {
+        startTime = Date.now();
+    }
+
+    function stopTimer() {
+        if (startTime) {
+            const endTime = Date.now();
+            const elapsedTime = endTime - startTime;
+            console.log("Elapsed time:", elapsedTime, "milliseconds");
+            startTime = null; // Reset start time
+        } else {
+            console.log("Timer was not started.");
+        }
+    }
+
     const handleSend = async () => {
+        startTimer();
         let text = input;
         setTokenString("");
         if (selectedConversation) {
@@ -230,6 +248,7 @@ function Home() {
         let tokenSum = "";
 
         source.onmessage = async (event) => {
+            stopTimer();
             let tokens = event.data.match(/"([^"]*)"|[^"\s]+/g);
             if (tokens) {
                 tokens = tokens.map(token => token.replace(/^"|"$/g, ''));
