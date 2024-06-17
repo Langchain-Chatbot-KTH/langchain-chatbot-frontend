@@ -1,4 +1,4 @@
-# SweBot React Node Project
+# React Node Project
 
 ## Overview
 
