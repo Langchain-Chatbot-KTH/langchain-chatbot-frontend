@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const storedModel = localStorage.getItem('model') ?? 'llama3';
+
 /**
  * Sends a message to the backend.
  * @param {string} message - The message to send
@@ -9,7 +11,8 @@ import axios from 'axios';
  */
 export async function sendMsgToBackend(message, conversationId, senderId) {
     try {
-        const response = await axios.post(`http://localhost:9090/api/conversations/${conversationId}/send`, null, {
+        const response = await axios.post(`https://proxyembedding.vm-app.cloud.cbh.kth.se/api/conversations/${conversationId}/send`, null, {
+        //const response = await axios.post(`http://localhost:9090/api/conversations/${conversationId}/send`, null, {
             params: {
                 conversationId: conversationId,
                 content: message,
@@ -32,7 +35,8 @@ export async function sendMsgToBackend(message, conversationId, senderId) {
  */
 export async function appendMsgToBackend(messageId, message) {
     try {
-        const response = await axios.post(`http://localhost:9090/api/conversations/messages/${messageId}/addText`, null, {
+        const response = await axios.post(`https://proxyembedding.vm-app.cloud.cbh.kth.se/api/conversations/messages/${messageId}/addText`, null, {
+        //const response = await axios.post(`http://localhost:9090/api/conversations/messages/${messageId}/addText`, null, {
             params: {
                 messageId: messageId,
                 additionalText: message,
@@ -53,12 +57,14 @@ export async function appendMsgToBackend(messageId, message) {
  */
 export async function sendMsgToBotBackendStream(message, conversationId) {
     const uuid = localStorage.getItem('uuid');
+    console.log(storedModel);
     try {
-        await axios.get('http://localhost:9090/generateStream/model', {
+        await axios.get('https://proxyembedding.vm-app.cloud.cbh.kth.se/generateStream/model', {
+        //await axios.get('http://localhost:9090/generateStream/model', {
             params: {
                 message: message,
                 uuid: uuid,
-                modelName: "llama3",
+                modelName: storedModel,
                 id: conversationId
             }
         });
@@ -80,14 +86,17 @@ export async function sendMsgToBotBackendStream(message, conversationId) {
  */
 export async function sendMsgToBotBackendStreamFile(file, message, id) {
     const uuid = localStorage.getItem('uuid');
+    let modelName = "llama3";
     try {
         const formData = new FormData();
         formData.append('message', message);
         formData.append('document', file);
         formData.append('uuid', uuid);
+        formData.append('modelName', storedModel);
         formData.append('id', id);
 
-        const response = await axios.post('http://localhost:9090/generateStreamFromDocument/documentStream', formData, {
+        const response = await axios.post('https://proxyembedding.vm-app.cloud.cbh.kth.se/generateStreamFromDocument/documentStream', formData, {
+        //const response = await axios.post('http://localhost:9090/generateStreamFromDocument/documentStream', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -122,11 +131,13 @@ export async function sendMsgToBotBackendStreamImage(image, message, id) {
 export async function sendMsgToBotBackendStreamUrl(url, message, id) {
     const uuid = localStorage.getItem('uuid');
     try {
-        const response = await axios.get('http://localhost:9090/generateStreamFromURL/url', {
+        const response = await axios.get('https://proxyembedding.vm-app.cloud.cbh.kth.se/generateStreamFromURL/url', {
+        //const response = await axios.get('http://localhost:9090/generateStreamFromURL/url', {
             params: {
                 message: message,
                 urlPath: url,
                 uuid: uuid,
+                modelName: storedModel,
                 id: id
             }
         });
@@ -148,7 +159,8 @@ export async function sendMsgToBotBackend(message) {
     try {
         const uuid = localStorage.getItem('uuid');
 
-        const response = await axios.get('http://localhost:9090/generateText/WholeText', {
+        const response = await axios.get('https://proxyembedding.vm-app.cloud.cbh.kth.se/generateText/WholeText', {
+        //const response = await axios.get('http://localhost:9090/generateText/WholeText', {
             params: {
                 message: message,
                 uuid: uuid
@@ -169,11 +181,16 @@ export async function sendMsgToBotBackend(message) {
  */
 export async function initializeProgram(uuid) {
     try {
-        const response = await axios.get(`http://localhost:9090/api/conversations/getByOwnerId`, {
+        const response = await axios.get(`https://proxyembedding.vm-app.cloud.cbh.kth.se/api/conversations/getByOwnerId`, {
+        //const response = await axios.get(`http://localhost:9090/api/conversations/getByOwnerId`, {
             params: {
                 ownerId: uuid
             }
         });
+
+        if (storedModel === null || storedModel === undefined) {
+            storedModel = 'llama3';
+        }
 
         return response.data.map(conversation => conversation.id);
     } catch (error) {
@@ -189,7 +206,8 @@ export async function initializeProgram(uuid) {
  */
 export async function fetchConversationById(id) {
     try {
-        const response = await axios.get(`http://localhost:9090/api/conversations/${id}`);
+        const response = await axios.get(`https://proxyembedding.vm-app.cloud.cbh.kth.se/api/conversations/${id}`);
+        //const response = await axios.get(`http://localhost:9090/api/conversations/${id}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching conversation:', error);
@@ -204,7 +222,8 @@ export async function fetchConversationById(id) {
  */
 export async function startNewConversation(ownerId) {
     try {
-        const response = await axios.post('http://localhost:9090/api/conversations/start', null, {
+        const response = await axios.post('https://proxyembedding.vm-app.cloud.cbh.kth.se/api/conversations/start', null, {
+        //const response = await axios.post('http://localhost:9090/api/conversations/start', null, {
             params: {
                 ownerId: ownerId
             }

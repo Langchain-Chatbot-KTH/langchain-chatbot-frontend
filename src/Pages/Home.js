@@ -5,7 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import './PagesStyle/HomeStyle.css';
 import msgIcon from '../assets/message.svg';
-import home from '../assets/home.svg';
+import home from '../assets/home.png';
 import saved from '../assets/bookmark.svg';
 import rocket from '../assets/rocket.svg';
 import sendBtn from '../assets/send.svg';
@@ -42,7 +42,6 @@ function Home() {
     const [selectedUrl, setSelectedUrl] = useState('');
     const [tokenString, setTokenString] = useState('');
     const [urlError, setUrlError] = useState('');
-
 
     const handleTransparentBoxToggle = () => {
         setTransparentBoxVisible(!transparentBoxVisible);
@@ -149,9 +148,14 @@ function Home() {
         return urlRegex.test(string);
     }
 
-    const handleInitSse = async () => {
+    const handleInitSse = () => {
         const uuid = localStorage.getItem('uuid');
-        return new EventSource(`http://localhost:9090/subscribe/${uuid}`);
+        if (!uuid) {
+            console.error('UUID is not available in localStorage');
+            return null;
+        }
+        return new EventSource(`https://proxyembedding.vm-app.cloud.cbh.kth.se/subscribe/${uuid}`);
+        //return new EventSource(`http://localhost:9090/subscribe/${uuid}`);
     };
 
     const handleFileSelect = (event) => {
@@ -300,7 +304,14 @@ function Home() {
                     </div>
                 </div>
                 <div className="lowerSide">
-                    <div className="listItems"><img src={home} alt="home" className="listItemsImg"/>Home</div>
+                    <Link
+                        to="/embedding"
+                        className="listItems"
+                        style={{ textDecoration: 'none', color: 'white' }}
+                    >
+                        <img src={home} alt="home" className="listItemsImg" />
+                        Embeddings
+                    </Link>
                     <div className="listItems" onClick={handleTransparentBoxToggle}><img src={saved} alt="saved" className="listItemsImg"/>File</div>
                     <Link
                         to="/settings"

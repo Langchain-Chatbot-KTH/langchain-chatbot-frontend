@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="73639153-e849-4962-a936-7f3f80058887" name="Changes" comment="Able to send docuements and urls for analysis and get stream response">
+    <list default="true" id="73639153-e849-4962-a936-7f3f80058887" name="Changes" comment="new actions version">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/Home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/Home.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Pages/PagesLogic/UUID.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pages/PagesLogic/UUID.js" afterDir="false" />
@@ -147,7 +147,8 @@
       <workItem from="1713441501543" duration="48000" />
       <workItem from="1713961326012" duration="6128000" />
       <workItem from="1714314361052" duration="11000" />
-      <workItem from="1718609392816" duration="5206000" />
+      <workItem from="1718609392816" duration="17932000" />
+      <workItem from="1718812867232" duration="10270000" />
     </task>
     <task id="LOCAL−00001" summary="Alpha 1.0 - Changed Settings to redirect to / if uuid update is successful">
       <option name="closed" value="true" />
@@ -233,7 +234,21 @@
       <option name="presentableId" value="LOCAL−00012" />
       <updated>1709294156849</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL−00013" summary="All data management moved to the same repo">
+      <option name="closed" value="true" />
+      <created>1718625399037</created>
+      <option name="number" value="LOCAL−00013" />
+      <option name="presentableId" value="LOCAL−00013" />
+      <updated>1718625399037</updated>
+    </task>
+    <task id="LOCAL−00014" summary="new actions version">
+      <option name="closed" value="true" />
+      <created>1718625460550</created>
+      <option name="number" value="LOCAL−00014" />
+      <option name="presentableId" value="LOCAL−00014" />
+      <updated>1718625460550</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -265,6 +280,8 @@
     <MESSAGE value="Implemented TextParser.js and parsing for incomming stream as Json format" />
     <MESSAGE value="Able to send docuements and urls for analysis" />
     <MESSAGE value="Able to send docuements and urls for analysis and get stream response" />
-    <option name="LAST_COMMIT_MESSAGE" value="Able to send docuements and urls for analysis and get stream response" />
+    <MESSAGE value="All data management moved to the same repo" />
+    <MESSAGE value="new actions version" />
+    <option name="LAST_COMMIT_MESSAGE" value="new actions version" />
   </component>
 </project>

@@ -1,0 +1,185 @@
+.embeddings-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgba(16, 16, 19, 0.98);
+}
+
+.embeddings-box {
+    background-color: rgb(201, 201, 203);
+    border: 2px solid #050505; /* Dark border */
+    border-radius: 10px;
+    padding: 20px;
+    width: 80%;
+    max-width: 800px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow */
+}
+
+h1, h2 {
+    color: #050505; /* Dark text color */
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-size: 18px;
+    color: #050505;
+    margin-bottom: 8px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.neo4j-input {
+    width: 100%; /* Full width */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #050505; /* Dark border */
+    border-radius: 5px;
+    outline: none;
+    text-align: center;
+}
+
+.connect-btn,
+.send-query-btn,
+.back-btn,
+.back-btn-start {
+    background-color: #050505; /* Dark button background */
+    color: #f1f1f5; /* Light text color */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.back-btn-start {
+    margin-left: 10px;
+}
+
+.send-query-btn {
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.connect-btn {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.connect-btn:hover,
+.send-query-btn:hover,
+.back-btn:hover {
+    background-color: #23232d; /* Darken button on hover */
+}
+
+.error-message {
+    color: #ff0000; /* Red error message */
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+.query-box {
+    margin-top: 20px;
+    text-align: center; /* Center align text within query box */
+}
+
+.query-box textarea {
+    width: 100%; /* Full width */
+    padding: 10px 10px 100px;
+    font-size: 16px;
+    border: 1px solid #050505; /* Dark border */
+    border-radius: 5px;
+    outline: none;
+    resize: none; /* Disable resizing */
+}
+
+.button-group {
+    margin-top: 10px;
+}
+
+.query-result {
+    margin-top: 20px;
+    text-align: center; /* Center align text within query result */
+}
+
+.query-result h3 {
+    font-size: 20px;
+    color: #050505;
+    margin-bottom: 10px;
+}
+
+.query-result pre {
+    background-color: #f9f9f9; /* Light grey background for query result */
+    padding: 10px;
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 5px;
+    white-space: pre-wrap; /* Wrap text in <pre> */
+    overflow-x: auto; /* Horizontal scroll if needed */
+}
+
+.databases-list {
+    border: 1px solid #050505; /* Dark border */
+    border-radius: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 20px;
+    text-align: center; /* Center align text within databases list */
+    margin-bottom: 50px;
+    background-color: rgb(173, 173, 173);
+}
+
+.create-database-box{
+    border: 1px solid #050505; /* Dark border */
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: rgb(173, 173, 173);
+}
+
+.neo4j-input{
+    width: 90%;
+}
+
+.databases-list h2 {
+    font-size: 24px;
+    color: #050505;
+    margin-bottom: 10px;
+}
+
+.database-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center align options */
+}
+
+.database-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Add spacing between options */
+}
+
+.database-option input[type="radio"] {
+    margin-right: 10px; /* Space to the right of radio buttons */
+}
+
+.databases-list ul {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0;
+}
+
+.databases-list li {
+    font-size: 16px;
+    color: #050505;
+    margin-bottom: 5px;
+}
